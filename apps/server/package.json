@@ -1,0 +1,33 @@
+{
+  "name": "server",
+  "module": "./src/server.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run dist/index.js",
+    "lint": "bun run lint"
+  },
+  "devDependencies": {
+    "@template/typescript-config": "*",
+    "@types/bun": "latest",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "tsdown": "^0.15.4"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@template/backend-common": "*",
+    "@template/common": "*",
+    "@template/auth": "*",
+    "@template/store": "*",
+    "@template/trpc": "*",
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}

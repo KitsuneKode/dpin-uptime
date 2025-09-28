@@ -1,0 +1,28 @@
+{
+  "name": "@template/store",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "db:generate": " prisma generate",
+    "db:migrate": " prisma migrate",
+    "db:seed": "bun run src/scripts/seed.ts",
+    "db:studio": " prisma studio",
+    "db:migrate:dev": "prisma migrate dev",
+    "db:deploy": " prisma deploy"
+  },
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "devDependencies": {
+    "@template/typescript-config": "*",
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.9.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.11.1",
+    "prisma": "^6.11.1"
+  }
+}

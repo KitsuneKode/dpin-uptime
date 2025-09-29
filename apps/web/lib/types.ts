@@ -1,25 +1,58 @@
+// Database-aligned types based on Prisma schema
+export interface Website {
+  id: string;
+  url: string;
+  userId: string;
+  archived: boolean;
+  websiteTicks?: WebsiteTick[];
+}
+
+export interface WebsiteTick {
+  id: string;
+  websiteId: string;
+  status: WebsiteStatus;
+  latency: number; // in milliseconds
+  validatorId: string;
+  createdAt: string;
+}
+
+export enum WebsiteStatus {
+  Bad = 'Bad',
+  Good = 'Good',
+}
+
+export interface Validator {
+  id: string;
+  publicKey: string;
+  location: string;
+  ip: string;
+}
+
+// Frontend display types (derived from database data)
 export interface Monitor {
   id: string;
-  name: string;
+  name: string; // derived from URL or user input
   url: string;
-  status: 'up' | 'down' | 'degraded' | 'paused';
-  lastChecked: string;
-  responseTime: number;
+  status: 'up' | 'down' | 'degraded' | 'paused'; // derived from recent ticks
+  lastChecked: string; // latest tick createdAt
+  responseTime: number; // latest tick latency
   uptime: {
-    current: string; // "5 hours 3 mins 46 seconds"
-    percentage: number;
+    current: string; // calculated uptime streak
+    percentage: number; // calculated from ticks
   };
-  interval: string; // "3m", "5m", etc.
-  incidents: number;
+  interval: string; // monitoring frequency
+  incidents: number; // calculated from status changes
   createdAt: string;
   updatedAt: string;
 }
 
+// Chart data types (derived from WebsiteTicks)
 export interface ResponseTimeData {
-  timestamp: string;
-  value: number;
-  monitorId: string;
-  location: string;
+  timestamp: string; // WebsiteTick.createdAt
+  value: number; // WebsiteTick.latency
+  monitorId: string; // WebsiteTick.websiteId
+  location: string; // Validator.location
+  status: WebsiteStatus; // WebsiteTick.status
 }
 
 export interface UptimeStats {

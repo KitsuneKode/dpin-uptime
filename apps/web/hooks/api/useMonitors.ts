@@ -31,11 +31,14 @@ export const useMonitors = (params?: {
   limit?: number;
   search?: string;
   status?: string;
+  refetchInterval?: number;
 }): UseQueryResult<PaginatedResponse<Monitor>> => {
+  const { refetchInterval, ...apiParams } = params || {};
   return useQuery({
-    queryKey: monitorKeys.list(params || {}),
-    queryFn: () => api.getMonitors(params),
+    queryKey: monitorKeys.list(apiParams),
+    queryFn: () => api.getMonitors(apiParams),
     staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: refetchInterval || false,
   });
 };
 

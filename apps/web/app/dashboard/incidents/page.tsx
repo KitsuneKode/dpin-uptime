@@ -45,7 +45,7 @@ export default function IncidentsPage() {
           <div className="flex items-center justify-between">
             <CardTitle>Active Incidents</CardTitle>
             <div className="flex items-center gap-2">
-              <Select value={status} onValueChange={(v: any) => setStatus(v)}>
+              <Select value={status} onValueChange={(v: typeof status) => setStatus(v)}>
                 <SelectTrigger className="w-40">
                   <SelectValue placeholder="Filter status" />
                 </SelectTrigger>

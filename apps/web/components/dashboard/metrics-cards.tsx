@@ -6,7 +6,7 @@ import { Activity, Clock, AlertTriangle, Zap } from 'lucide-react'
 
 export function MetricsCards() {
   const { data: metricsResponse, isLoading } = useDashboardMetrics()
-  const metrics = metricsResponse?.data
+  const metrics = metricsResponse!.data
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

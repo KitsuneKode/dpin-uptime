@@ -1,13 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
+import { Card, CardContent, CardHeader } from '@dpin-uptime/ui/components/card';
 import { Button } from '@dpin-uptime/ui/components/button';
 import { Badge } from '@dpin-uptime/ui/components/badge';
 import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
 import { useMonitor, useUptimeStats, useResponseTimeData } from '@/hooks/api';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { UptimeChart } from '@/components/ui/uptime-chart';
+import { UptimeStatsTable } from '@/components/dashboard/uptime-stats-table';
 import { MetricCard } from '@/components/ui/metric-card';
 import { formatDistanceToNow } from 'date-fns';
 import { 
@@ -183,51 +184,8 @@ export function MonitorDetails({ monitorId, onEdit }: MonitorDetailsProps) {
           isLoading={chartLoading}
         />
 
-        {/* Uptime Statistics */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Uptime Statistics</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {statsLoading ? (
-              <div className="space-y-4">
-                {Array.from({ length: 5 }).map((_, i) => (
-                  <div key={i} className="flex justify-between">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-4 w-16" />
-                  </div>
-                ))}
-              </div>
-            ) : uptimeStats ? (
-              <div className="space-y-4">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Availability</span>
-                  <span className="font-medium">{uptimeStats.availability.toFixed(4)}%</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Downtime</span>
-                  <span className="font-medium">{uptimeStats.downtime}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Incidents</span>
-                  <span className="font-medium">{uptimeStats.incidents}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Longest Incident</span>
-                  <span className="font-medium">{uptimeStats.longestIncident}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Avg Incident Duration</span>
-                  <span className="font-medium">{uptimeStats.avgIncident}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="text-center text-muted-foreground py-8">
-                No statistics available
-              </div>
-            )}
-          </CardContent>
-        </Card>
+        {/* Uptime Statistics Table */}
+        <UptimeStatsTable monitorId={monitorId} />
       </div>
     </div>
   );

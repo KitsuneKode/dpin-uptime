@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid } from 'recharts';
+import * as React from 'react';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
 import { Button } from '@dpin-uptime/ui/components/button';
 import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
@@ -10,8 +10,6 @@ import {
   ChartContainer, 
   ChartTooltip, 
   ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
   type ChartConfig 
 } from '@dpin-uptime/ui/components/chart';
 import { useMonitors, useResponseTimeData } from '@/hooks/api';
@@ -19,9 +17,9 @@ import { cn } from '@dpin-uptime/ui/lib/utils';
 import type { TimePeriod, Location } from '@/lib/types';
 
 const periodOptions: { value: TimePeriod; label: string }[] = [
-  { value: 'day', label: 'Last 24 Hours' },
-  { value: 'week', label: 'Last 7 Days' },
-  { value: 'month', label: 'Last 30 Days' },
+  { value: 'day', label: 'Day' },
+  { value: 'week', label: 'Week' },
+  { value: 'month', label: 'Month' },
 ];
 
 const locationOptions: { value: Location; label: string }[] = [
@@ -39,9 +37,9 @@ const chartColors = [
   '#8b5cf6', // violet-500
 ];
 
-export function ResponseTimeChart() {
-  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('day');
-  const [selectedLocation, setSelectedLocation] = useState<Location>('us-east');
+export function ResponseTimeAreaChart() {
+  const [selectedPeriod, setSelectedPeriod] = React.useState<TimePeriod>('day');
+  const [selectedLocation, setSelectedLocation] = React.useState<Location>('us-east');
 
   const { data: monitorsResponse, isLoading: monitorsLoading } = useMonitors({ limit: 5 });
   const monitors = React.useMemo(() => monitorsResponse?.data || [], [monitorsResponse?.data]);
@@ -50,7 +48,6 @@ export function ResponseTimeChart() {
   const chartConfig = React.useMemo(() => {
     const config: ChartConfig = {};
     monitors.forEach((monitor, index) => {
-      // Create safe CSS variable name from monitor name
       const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
       config[safeName] = {
         label: monitor.name,
@@ -60,25 +57,20 @@ export function ResponseTimeChart() {
     return config;
   }, [monitors]);
 
-  // Get response time data for each monitor (up to 5 monitors max)
+  // Get response time data for each monitor
   const monitor1 = monitors[0];
   const monitor2 = monitors[1];
   const monitor3 = monitors[2];
-  const monitor4 = monitors[3];
-  const monitor5 = monitors[4];
 
   const query1 = useResponseTimeData(monitor1?.id || '', selectedPeriod, selectedLocation);
   const query2 = useResponseTimeData(monitor2?.id || '', selectedPeriod, selectedLocation);
   const query3 = useResponseTimeData(monitor3?.id || '', selectedPeriod, selectedLocation);
-  const query4 = useResponseTimeData(monitor4?.id || '', selectedPeriod, selectedLocation);
-  const query5 = useResponseTimeData(monitor5?.id || '', selectedPeriod, selectedLocation);
 
-  const responseTimeQueries = [query1, query2, query3, query4, query5].filter((query, index) => 
+  const responseTimeQueries = [query1, query2, query3].filter((query, index) => 
     monitors[index] && monitors[index]?.id
   );
 
   const isLoading = monitorsLoading || responseTimeQueries.some(query => query.isLoading);
-  const hasError = responseTimeQueries.some(query => query.error);
 
   // Combine data from all monitors
   const chartData = React.useMemo(() => {
@@ -86,17 +78,17 @@ export function ResponseTimeChart() {
       return [];
     }
 
-    const timeMap = new Map<string, any>();
+    const timeMap = new Map<string, Record<string, unknown>>();
 
     responseTimeQueries.forEach((query, index) => {
       const monitor = monitors[index];
       if (!monitor) return;
       
       const data = query.data?.data || [];
+      const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
 
       data.forEach(point => {
         const timestamp = point.timestamp;
-        const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
         if (!timeMap.has(timestamp)) {
           timeMap.set(timestamp, { timestamp });
         }
@@ -105,7 +97,7 @@ export function ResponseTimeChart() {
     });
 
     return Array.from(timeMap.values()).sort((a, b) => 
-      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+      new Date(a.timestamp as string).getTime() - new Date(b.timestamp as string).getTime()
     );
   }, [responseTimeQueries, monitors]);
 
@@ -114,7 +106,7 @@ export function ResponseTimeChart() {
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
-            <CardTitle>Response Time</CardTitle>
+            <CardTitle>Response Times</CardTitle>
             <div className="flex gap-2">
               <Skeleton className="h-9 w-32" />
               <Skeleton className="h-9 w-24" />
@@ -128,26 +120,11 @@ export function ResponseTimeChart() {
     );
   }
 
-  if (hasError) {
-    return (
-      <Card>
-        <CardHeader>
-          <CardTitle>Response Time</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-center h-[400px] text-muted-foreground">
-            Failed to load response time data
-          </div>
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card>
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle>Response Time</CardTitle>
+          <CardTitle>Response Times</CardTitle>
           <div className="flex gap-2">
             <Select value={selectedLocation} onValueChange={(value: Location) => setSelectedLocation(value)}>
               <SelectTrigger className="w-32">
@@ -187,45 +164,58 @@ export function ResponseTimeChart() {
           </div>
         ) : (
           <ChartContainer config={chartConfig} className="h-[400px] w-full">
-            <LineChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="timestamp"
-                tickFormatter={(value) => {
-                  const date = new Date(value);
-                  return selectedPeriod === 'day' 
-                    ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-                    : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
-                }}
-              />
-              <YAxis
-                tickFormatter={(value) => `${value}ms`}
-              />
-              <ChartTooltip 
-                content={
-                  <ChartTooltipContent 
-                    labelFormatter={(value) => new Date(value).toLocaleString()}
-                    formatter={(value, name) => [`${value}ms`, name]}
-                  />
-                } 
-              />
-              <ChartLegend content={<ChartLegendContent />} />
-              {monitors.map((monitor, index) => {
-                const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
-                return (
-                  <Line
-                    key={monitor.id}
-                    type="monotone"
-                    dataKey={safeName}
-                    stroke={chartColors[index % chartColors.length]}
-                    strokeWidth={2}
-                    dot={false}
-                    activeDot={{ r: 4, fill: chartColors[index % chartColors.length] }}
-                    connectNulls={false}
-                  />
-                );
-              })}
-            </LineChart>
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                <defs>
+                  {monitors.slice(0, 3).map((monitor, index) => {
+                    const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                    return (
+                      <linearGradient key={safeName} id={`gradient-${safeName}`} x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor={chartColors[index]} stopOpacity={0.3}/>
+                        <stop offset="95%" stopColor={chartColors[index]} stopOpacity={0.05}/>
+                      </linearGradient>
+                    );
+                  })}
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#374151" opacity={0.3} />
+                <XAxis
+                  dataKey="timestamp"
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return selectedPeriod === 'day' 
+                      ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                      : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                  }}
+                  stroke="#9CA3AF"
+                />
+                <YAxis
+                  tickFormatter={(value) => `${value}ms`}
+                  stroke="#9CA3AF"
+                />
+                <ChartTooltip 
+                  content={
+                    <ChartTooltipContent 
+                      labelFormatter={(value) => new Date(value).toLocaleString()}
+                      formatter={(value, name) => [`${value}ms`, name]}
+                    />
+                  } 
+                />
+                {monitors.slice(0, 3).map((monitor, index) => {
+                  const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                  return (
+                    <Area
+                      key={monitor.id}
+                      type="monotone"
+                      dataKey={safeName}
+                      stroke={chartColors[index]}
+                      strokeWidth={2}
+                      fill={`url(#gradient-${safeName})`}
+                      connectNulls={false}
+                    />
+                  );
+                })}
+              </AreaChart>
+            </ResponsiveContainer>
           </ChartContainer>
         )}
       </CardContent>

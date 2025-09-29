@@ -8,6 +8,7 @@ import type {
   ApiResponse,
   PaginatedResponse,
 } from './types'
+import { WebsiteStatus } from './types'
 
 // Helper function to generate random data (for future use)
 // const randomBetween = (min: number, max: number) =>
@@ -33,144 +34,194 @@ export const mockMonitors: Monitor[] = [
   {
     id: '1',
     name: 'Main Website',
-    url: 'https://example.com',
+    url: 'https://mugenbrain.tech',
     status: 'up',
-    lastChecked: new Date(Date.now() - 2 * 60 * 1000).toISOString(), // 2 mins ago
+    lastChecked: new Date(Date.now() - 36 * 1000).toISOString(), // 36 seconds ago
     responseTime: 145,
     uptime: {
-      current: '15 days 4 hours 23 minutes',
-      percentage: 99.98,
+      current: '5 hours 3 minutes 46 seconds',
+      percentage: 100.0000,
     },
-    interval: '5m',
-    incidents: 2,
-    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days ago
-    updatedAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+    interval: '3m',
+    incidents: 0,
+    createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 36 * 1000).toISOString(),
   },
   {
     id: '2',
     name: 'API Gateway',
-    url: 'https://api.example.com',
+    url: 'https://api.mugenbrain.tech',
     status: 'up',
-    lastChecked: new Date(Date.now() - 1 * 60 * 1000).toISOString(), // 1 min ago
+    lastChecked: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
     responseTime: 89,
     uptime: {
-      current: '7 days 12 hours 5 minutes',
-      percentage: 99.95,
+      current: '12 days 8 hours 15 minutes',
+      percentage: 99.9876,
     },
-    interval: '3m',
+    interval: '5m',
     incidents: 1,
-    createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(), // 20 days ago
+    createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
   },
   {
     id: '3',
-    name: 'Database Server',
-    url: 'https://db.example.com',
-    status: 'degraded',
-    lastChecked: new Date(Date.now() - 3 * 60 * 1000).toISOString(), // 3 mins ago
-    responseTime: 1250,
+    name: 'Database Cluster',
+    url: 'https://db.mugenbrain.tech',
+    status: 'up',
+    lastChecked: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+    responseTime: 234,
     uptime: {
-      current: '2 hours 15 minutes',
-      percentage: 97.8,
+      current: '8 days 14 hours 22 minutes',
+      percentage: 99.9234,
     },
     interval: '5m',
-    incidents: 5,
-    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(), // 45 days ago
-    updatedAt: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+    incidents: 2,
+    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
   },
   {
     id: '4',
-    name: 'CDN Endpoint',
-    url: 'https://cdn.example.com',
+    name: 'CDN Europe',
+    url: 'https://eu-cdn.mugenbrain.tech',
     status: 'up',
-    lastChecked: new Date(Date.now() - 1 * 60 * 1000).toISOString(), // 1 min ago
+    lastChecked: new Date(Date.now() - 45 * 1000).toISOString(),
     responseTime: 67,
     uptime: {
       current: '25 days 8 hours 42 minutes',
-      percentage: 99.99,
+      percentage: 99.9945,
     },
     interval: '2m',
     incidents: 0,
-    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(), // 60 days ago
-    updatedAt: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 45 * 1000).toISOString(),
   },
   {
     id: '5',
-    name: 'Payment Gateway',
-    url: 'https://payments.example.com',
-    status: 'down',
-    lastChecked: new Date(Date.now() - 5 * 60 * 1000).toISOString(), // 5 mins ago
-    responseTime: 0,
+    name: 'Authentication Service',
+    url: 'https://auth.mugenbrain.tech',
+    status: 'up',
+    lastChecked: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+    responseTime: 156,
     uptime: {
-      current: '0 minutes',
-      percentage: 98.5,
+      current: '18 days 2 hours 11 minutes',
+      percentage: 99.9567,
+    },
+    interval: '3m',
+    incidents: 1,
+    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '6',
+    name: 'File Storage',
+    url: 'https://files.mugenbrain.tech',
+    status: 'up',
+    lastChecked: new Date(Date.now() - 4 * 60 * 1000).toISOString(),
+    responseTime: 298,
+    uptime: {
+      current: '6 days 16 hours 33 minutes',
+      percentage: 99.8901,
+    },
+    interval: '5m',
+    incidents: 3,
+    createdAt: new Date(Date.now() - 120 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 4 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '7',
+    name: 'Analytics Dashboard',
+    url: 'https://analytics.mugenbrain.tech',
+    status: 'up',
+    lastChecked: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+    responseTime: 412,
+    uptime: {
+      current: '4 days 9 hours 18 minutes',
+      percentage: 99.7845,
+    },
+    interval: '10m',
+    incidents: 4,
+    createdAt: new Date(Date.now() - 150 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
+  },
+  {
+    id: '8',
+    name: 'Payment Processor',
+    url: 'https://payments.mugenbrain.tech',
+    status: 'up',
+    lastChecked: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
+    responseTime: 178,
+    uptime: {
+      current: '11 days 7 hours 44 minutes',
+      percentage: 99.9123,
     },
     interval: '1m',
-    incidents: 8,
-    createdAt: new Date(Date.now() - 90 * 24 * 60 * 60 * 1000).toISOString(), // 90 days ago
-    updatedAt: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    incidents: 2,
+    createdAt: new Date(Date.now() - 180 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
   },
 ]
 
 // Mock Dashboard Metrics
 export const mockDashboardMetrics: DashboardMetrics = {
   totalMonitors: mockMonitors.length,
-  overallUptime: 99.24,
-  activeIncidents: 2,
-  avgResponseTime: 310,
-  uptimeStreak: '15 days 4 hours 23 minutes',
-  lastChecked: new Date(Date.now() - 1 * 60 * 1000).toISOString(),
+  overallUptime: 99.9234,
+  activeIncidents: 0,
+  avgResponseTime: 189,
+  uptimeStreak: '5 hours 3 minutes 46 seconds',
+  lastChecked: new Date(Date.now() - 36 * 1000).toISOString(),
 }
 
 // Mock Incidents Data
 export const mockIncidents: Incident[] = [
   {
     id: '1',
-    monitorId: '5',
-    title: 'Payment Gateway Outage',
-    description: 'Payment processing is currently unavailable due to server issues.',
-    status: 'investigating',
-    severity: 'critical',
-    startedAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(), // 15 mins ago
+    monitorId: '8',
+    title: 'Payment Processor Brief Slowdown',
+    description: 'Payment processing experienced temporary increased response times.',
+    status: 'resolved',
+    severity: 'minor',
+    startedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
+    resolvedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
     updates: [
       {
         id: '1-1',
         incidentId: '1',
-        message: 'We are investigating reports of payment processing failures.',
+        message: 'Monitoring increased response times on payment processor.',
         status: 'investigating',
-        createdAt: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
       },
       {
         id: '1-2',
         incidentId: '1',
-        message: 'Issue identified with payment gateway. Working on a fix.',
-        status: 'identified',
-        createdAt: new Date(Date.now() - 10 * 60 * 1000).toISOString(),
+        message: 'Response times have returned to normal. Issue resolved.',
+        status: 'resolved',
+        createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
       },
     ],
   },
   {
     id: '2',
     monitorId: '3',
-    title: 'Database Performance Degradation',
-    description: 'Database queries are experiencing higher than normal response times.',
-    status: 'monitoring',
+    title: 'Database Connection Pool Exhaustion',
+    description: 'Database cluster experienced connection pool exhaustion during peak traffic.',
+    status: 'resolved',
     severity: 'major',
-    startedAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(), // 45 mins ago
+    startedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    resolvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(), // 45 mins later
     updates: [
       {
         id: '2-1',
         incidentId: '2',
-        message: 'Database performance issues detected.',
+        message: 'Database connection issues detected during peak traffic.',
         status: 'investigating',
-        createdAt: new Date(Date.now() - 45 * 60 * 1000).toISOString(),
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       },
       {
         id: '2-2',
         incidentId: '2',
-        message: 'Applied database optimizations. Monitoring performance.',
-        status: 'monitoring',
-        createdAt: new Date(Date.now() - 20 * 60 * 1000).toISOString(),
+        message: 'Increased connection pool size and optimized queries. Issue resolved.',
+        status: 'resolved',
+        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
       },
     ],
   },
@@ -244,18 +295,43 @@ export const generateMockResponseTimeData = (
   const timestamps = generateTimestamps(dataPoints, intervalMinutes)
   
   return timestamps.map((timestamp, index) => {
-    // Add some realistic variation
-    const variation = Math.sin(index * 0.1) * 20 + (Math.random() - 0.5) * 40
-    const value = Math.max(10, baseResponseTime + variation)
+    // Create more realistic patterns
+    const timeOfDay = new Date(timestamp).getHours()
+    const dayOfWeek = new Date(timestamp).getDay()
     
-    // Simulate some outages for down monitors
-    const finalValue = monitor.status === 'down' && index > dataPoints - 10 ? 0 : value
+    // Base variation with time-of-day patterns
+    let variation = 0
+    
+    // Higher response times during peak hours (9-17)
+    if (timeOfDay >= 9 && timeOfDay <= 17) {
+      variation += 30 + Math.sin((timeOfDay - 9) / 8 * Math.PI) * 20
+    }
+    
+    // Weekend traffic patterns
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      variation -= 15
+    }
+    
+    // Add some random spikes and normal variation
+    const randomSpike = Math.random() < 0.02 ? Math.random() * 200 : 0 // 2% chance of spike
+    const normalVariation = (Math.random() - 0.5) * 30
+    const trendVariation = Math.sin(index * 0.05) * 15
+    
+    let value = Math.max(10, baseResponseTime + variation + randomSpike + normalVariation + trendVariation)
+    
+    // Simulate outages and degraded performance
+    if (monitor.status === 'down' && index > dataPoints - 10) {
+      value = 0 // Recent outage
+    } else if (monitor.status === 'degraded') {
+      value *= 1.5 + Math.random() * 0.5 // 1.5x to 2x slower
+    }
 
     return {
       timestamp,
-      value: Math.round(finalValue),
+      value: Math.round(value),
       monitorId,
       location,
+      status: value === 0 ? WebsiteStatus.Bad : WebsiteStatus.Good,
     }
   })
 }

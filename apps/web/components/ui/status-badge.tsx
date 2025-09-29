@@ -35,7 +35,6 @@ const statusConfig = {
 
 export function StatusBadge({ 
   status, 
-  size = 'md', 
   showDot = true, 
   className 
 }: StatusBadgeProps) {

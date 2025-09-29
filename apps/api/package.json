@@ -13,7 +13,7 @@
   },
   "devDependencies": {
     "@dpin-uptime/typescript-config": "*",
-    "@types/bun": "latest",
+    "@types/bun": "^1.2.23",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.3",
     "tsdown": "^0.15.4"
@@ -22,11 +22,9 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "@dpin-uptime/backend-common": "*",
     "@dpin-uptime/common": "*",
     "@dpin-uptime/auth": "*",
     "@dpin-uptime/store": "*",
-    "@dpin-uptime/trpc": "*",
     "cors": "^2.8.5",
     "express": "^5.1.0"
   }

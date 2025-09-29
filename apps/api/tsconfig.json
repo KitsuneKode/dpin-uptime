@@ -4,10 +4,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@dpin-uptime/store": ["../../packages/store/src/*"],
-      "@dpin-uptime/auth": ["../../packages/auth/src/*"],
-      "@dpin-uptime/trpc": ["../../packages/trpc/src/*"],
-      "@dpin-uptime/common": ["../../packages/trpc/src/common/*"]
+      "@dpin-uptime/store/*": ["../../packages/store/src/*"],
+      "@dpin-uptime/auth/*": ["../../packages/auth/src/*"],
+      "@dpin-uptime/common/*": ["../../packages/trpc/src/common/src/*"]
     },
     "outDir": "dist"
   }

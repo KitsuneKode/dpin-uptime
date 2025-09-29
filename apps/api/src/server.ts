@@ -5,14 +5,7 @@ import app from '@/app'
 import os from 'os'
 
 try {
-  config.validate([
-    'jwtSecret',
-    'port',
-    'frontendUrl',
-    'databaseUrl',
-    'betterAuthSecret',
-    'betterAuthUrl',
-  ])
+  config.validate(['port', 'frontendUrl', 'databaseUrl', 'betterAuthSecret', 'betterAuthUrl'])
 } catch (error) {
   logger.error('Configuration validation failed:', error)
   process.exit(1)

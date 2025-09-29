@@ -7,7 +7,6 @@
       "@dpin-uptime/ui/*": ["../../packages/ui/src/*"],
       "@dpin-uptime/store/*": ["../../packages/store/src/*"],
       "@dpin-uptime/auth/*": ["../../packages/auth/src/*"],
-      "@dpin-uptime/trpc/*": ["../../packages/trpc/src/*"],
       "@dpin-uptime/common/*": ["../../packages/common/src/*"]
     },
     "plugins": [

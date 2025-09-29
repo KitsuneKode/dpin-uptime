@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@dpin-uptime/typescript-config": "*",
-    "@types/bun": "latest"
+    "@types/bun": "^1.2.23"
   },
   "peerDependencies": {
     "typescript": "^5.9.2"

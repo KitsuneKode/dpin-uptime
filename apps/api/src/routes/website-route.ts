@@ -34,64 +34,69 @@ router.post('/website', async (req, res) => {
 })
 
 router.get('/website/status', async (req, res) => {
-try {
- const websiteId = req.query['id']! as string 
- const ticks = await prisma.website.findMany({
-    where: {
-      id:websiteId ,
-      archived:false,
-      userId: req.user!.id
+  try {
+    const websiteId = req.query['id']! as string
+    const ticks = await prisma.website.findMany({
+      where: {
+        id: websiteId,
+        archived: false,
+        userId: req.user!.id,
       },
       select: {
         url: true,
-        websiteTicks:true
-      }
-  })
+        websiteTicks: true,
+      },
+    })
 
-
-  res.status(200).json({ticks})
-
-  }  catch (error) {
-  throw error 
-}
-
+    res.status(200).json({ ticks })
+  } catch (error) {
+    throw error
+  }
 })
 
 router.get('/website', async (req, res) => {
   try {
-// const websiteId = req.query[]
-    
+    const websiteId = req.query['id'] as string
 
-   const websites = await prisma.website.findMany({
-      where: {
-        userId: req.user!.id,
-        archived: false,
+    if (!websiteId) {
+      const websites = await prisma.website.findMany({
+        where: {
+          userId: req.user!.id,
+          archived: false,
+        },
+      })
 
-      }
-    })
-
-    res.status(200).json({websites})
+      res.status(200).json({ websites })
+      return
+    } else {
+      const website = await prisma.website.findUnique({
+        where: {
+          id: websiteId,
+          userId: req.user!.id,
+        },
+      })
+    }
   } catch (error) {
-   throw error 
+    throw error
   }
 })
 
 router.delete('/website', async (req, res) => {
   try {
-  const {websiteId }= req.body;
+    const { websiteId } = req.body
 
     const website = await prisma.website.update({
       where: {
-        id:websiteId,
-        archived:false,
-        userId : req.user!.id
+        id: websiteId,
+        archived: false,
+        userId: req.user!.id,
       },
       data: {
-        archived: true
-      }
+        archived: true,
+      },
     })
 
-if(!website){
+    if (!website) {
       throw new Error('Failed to delete website')
     }
 

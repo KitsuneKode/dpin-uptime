@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@dpin-uptime/web",
   "version": "0.1.0",
   "type": "module",
   "private": true,
@@ -12,23 +12,19 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@radix-ui/react-accordion": "^1.2.12",
-    "@tanstack/react-query": "^5.90.2",
     "@dpin-uptime/auth": "*",
     "@dpin-uptime/common": "*",
     "@dpin-uptime/store": "*",
-    "@dpin-uptime/trpc": "*",
     "@dpin-uptime/ui": "*",
-    "@trpc/client": "^11.6.0",
-    "@trpc/server": "^11.6.0",
-    "@trpc/tanstack-react-query": "^11.6.0",
-    "client-only": "^0.0.1",
+    "@radix-ui/react-accordion": "^1.2.12",
+    "@tanstack/react-query": "^5.90.2",
+    "date-fns": "^4.1.0",
     "lucide-react": "^0.544.0",
+    "motion": "^12.23.22",
     "next": "^15.5.4",
     "next-themes": "^0.4.6",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
-    "server-only": "^0.0.1",
     "zod": "^4.1.11"
   },
   "devDependencies": {

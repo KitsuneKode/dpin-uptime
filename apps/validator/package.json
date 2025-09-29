@@ -12,7 +12,7 @@
     "lint": "bun run lint"
   },
   "devDependencies": {
-    "@types/bun": "latest",
+    "@types/bun": "^1.2.23",
     "@dpin-uptime/typescript-config": "*"
   },
   "peerDependencies": {

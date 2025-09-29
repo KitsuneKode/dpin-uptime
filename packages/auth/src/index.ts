@@ -1,3 +1,4 @@
+import { passwordSchema } from '@dpin-uptime/common'
 import { prisma } from '@dpin-uptime/store'
 import { betterAuth } from 'better-auth'
 export { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
@@ -11,17 +12,27 @@ export const auth = betterAuth({
   }),
   emailAndPassword: {
     enabled: true,
-    autoSignIn: false, //defaults to true
+    password: {
+      verify: async ({ hash, password }) => {
+        return passwordSchema.safeParse(password).success
+      },
+    },
   },
   plugins: [nextCookies()], // make sure this is the last plugin in the array
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['google', 'github'],
+    },
+  },
   socialProviders: {
-    //   github: {
-    //     clientId: process.env.GITHUB_CLIENT_ID as string,
-    //     clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-    //   },
-    //   google: {
-    //     clientId: process.env.GOOGLE_CLIENT_ID as string,
-    //     clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    //   },
+    github: {
+      clientId: process.env.GITHUB_CLIENT_ID as string,
+      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+    },
+    google: {
+      clientId: process.env.GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+    },
   },
 })

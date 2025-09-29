@@ -9,7 +9,7 @@
     "test:coverage": "bun test --coverage"
   },
   "devDependencies": {
-    "@types/bun": "latest"
+    "@types/bun": "^1.2.23"
   },
   "peerDependencies": {
     "typescript": "^5"

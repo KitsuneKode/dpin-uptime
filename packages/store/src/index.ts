@@ -1,3 +1,4 @@
+export { PrismaClientKnownRequestError } from './generated/runtime/library'
 import { PrismaClient } from './generated/client'
 
 export const prisma =

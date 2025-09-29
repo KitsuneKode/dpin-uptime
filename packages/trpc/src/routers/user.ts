@@ -1,6 +1,6 @@
 import { protectedProcedure, publicProcedure } from '../trpc'
 import type { TRPCRouterRecord } from '@trpc/server'
-import { prisma } from '@template/store'
+import { prisma } from '@dpin-uptime/store'
 import { z } from 'zod'
 
 export const userRouter = {

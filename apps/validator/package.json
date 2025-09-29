@@ -1,0 +1,21 @@
+{
+  "name": "@dpin-uptime/validator",
+  "module": "src/index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run dist/index.js",
+    "lint": "bun run lint"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@dpin-uptime/typescript-config": "*"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}

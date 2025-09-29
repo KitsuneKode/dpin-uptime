@@ -1,6 +1,6 @@
-import { ConfigLoader } from '@template/common/config-loader'
+import { ConfigLoader } from '@dpin-uptime/common/config-loader'
 
-const authConfigSchema = {
+const apiConfigSchema = {
   jwtSecret: () => process.env.JWT_SECRET || '',
   port: () => Number(process.env.PORT) || 8080,
   frontendUrl: () => process.env.FRONTEND_URL || '',
@@ -10,5 +10,6 @@ const authConfigSchema = {
   betterAuthSecret: () => process.env.BETTER_AUTH_SECRET || '',
 }
 
-const config = ConfigLoader.getInstance(authConfigSchema, 'auth')
+const config = ConfigLoader.getInstance(apiConfigSchema, 'api')
+
 export default config

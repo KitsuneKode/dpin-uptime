@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@template/ui/components",
-    "utils": "@template/ui/lib/utils",
-    "hooks": "@template/ui/hooks",
-    "lib": "@template/ui/lib",
-    "ui": "@template/ui/components"
+    "components": "@dpin-uptime/ui/components",
+    "utils": "@dpin-uptime/ui/lib/utils",
+    "hooks": "@dpin-uptime/ui/hooks",
+    "lib": "@dpin-uptime/ui/lib",
+    "ui": "@dpin-uptime/ui/components"
   }
 }

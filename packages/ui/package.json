@@ -1,5 +1,5 @@
 {
-  "name": "@template/ui",
+  "name": "@dpin-uptime/ui",
   "version": "0.0.0",
   "private": true,
   "exports": {
@@ -15,8 +15,8 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*",
+    "@dpin-uptime/eslint-config": "*",
+    "@dpin-uptime/typescript-config": "*",
     "@turbo/gen": "^2.5.8",
     "@types/node": "^24.5.2",
     "@types/react": "19.1.15",

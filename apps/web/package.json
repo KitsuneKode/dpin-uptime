@@ -14,11 +14,11 @@
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
     "@tanstack/react-query": "^5.90.2",
-    "@template/auth": "*",
-    "@template/common": "*",
-    "@template/store": "*",
-    "@template/trpc": "*",
-    "@template/ui": "*",
+    "@dpin-uptime/auth": "*",
+    "@dpin-uptime/common": "*",
+    "@dpin-uptime/store": "*",
+    "@dpin-uptime/trpc": "*",
+    "@dpin-uptime/ui": "*",
     "@trpc/client": "^11.6.0",
     "@trpc/server": "^11.6.0",
     "@trpc/tanstack-react-query": "^11.6.0",
@@ -32,8 +32,8 @@
     "zod": "^4.1.11"
   },
   "devDependencies": {
-    "@template/eslint-config": "*",
-    "@template/typescript-config": "*",
+    "@dpin-uptime/eslint-config": "*",
+    "@dpin-uptime/typescript-config": "*",
     "@types/node": "^24.5.2",
     "@types/react": "19.1.15",
     "@types/react-dom": "19.1.9",

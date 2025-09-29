@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import config from '@/utils/config'
 import { SuperJSON } from 'superjson'
-import type { AppRouter } from '@template/trpc'
+import type { AppRouter } from '@dpin-uptime/trpc'
 import { makeQueryClient } from './query-client'
 import type { QueryClient } from '@tanstack/react-query'
 import { QueryClientProvider } from '@tanstack/react-query'

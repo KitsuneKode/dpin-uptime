@@ -1,4 +1,4 @@
-import { ConfigLoader } from '@template/common/config-loader'
+import { ConfigLoader } from '@dpin-uptime/common/config-loader'
 
 const clientConfigSchema = {
   frontendUrl: () => process.env.NEXT_PUBLIC_APP_URL || '',

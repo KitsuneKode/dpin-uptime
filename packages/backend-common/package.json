@@ -1,12 +1,11 @@
 {
-  "name": "@template/backend-common",
+  "name": "@dpin-uptime/backend-common",
   "version": "1.0.0",
   "description": "",
   "main": "./src/index.ts",
   "private": true,
   "exports": {
-    ".": "./src/index.ts",
-    "./config": "./src/config.ts"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -15,11 +14,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@template/typescript-config": "*",
+    "@dpin-uptime/typescript-config": "*",
     "@types/bun": "latest"
   },
   "dependencies": {
-    "@template/common": "*"
+    "@dpin-uptime/common": "*"
   },
   "peerDependencies": {
     "typescript": "^5"

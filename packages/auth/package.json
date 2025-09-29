@@ -1,5 +1,5 @@
 {
-  "name": "@template/auth",
+  "name": "@dpin-uptime/auth",
   "module": "src/app.ts",
   "type": "module",
   "private": true,
@@ -8,14 +8,14 @@
     "./client": "./src/client.ts"
   },
   "devDependencies": {
-    "@template/typescript-config": "*",
+    "@dpin-uptime/typescript-config": "*",
     "@types/bun": "latest"
   },
   "peerDependencies": {
     "typescript": "^5"
   },
   "dependencies": {
-    "@template/store": "*",
+    "@dpin-uptime/store": "*",
     "better-auth": "^1.2.12"
   }
 }

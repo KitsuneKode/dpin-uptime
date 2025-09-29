@@ -1,6 +1,6 @@
-import { ConfigLoader } from '@template/common/config-loader'
+import { ConfigLoader } from '@dpin-uptime/common/config-loader'
 
-const backendConfigSchema = {
+const validatorConfigSchema = {
   jwtSecret: () => process.env.JWT_SECRET || '',
   port: () => Number(process.env.PORT) || 8080,
   frontendUrl: () => process.env.FRONTEND_URL || '',
@@ -8,4 +8,4 @@ const backendConfigSchema = {
   environment: () => process.env.NODE_ENV || '',
 }
 
-export const config = ConfigLoader.getInstance(backendConfigSchema, 'api')
+export const config = ConfigLoader.getInstance(validatorConfigSchema, 'validator')

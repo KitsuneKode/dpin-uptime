@@ -1,4 +1,4 @@
-# @template/backend-common
+# @dpin-uptime/backend-common
 
 To install dependencies:
 

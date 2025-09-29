@@ -1,6 +1,6 @@
-import { auth, fromNodeHeaders } from '@template/auth/server'
+import { auth, fromNodeHeaders } from '@dpin-uptime/auth/server'
 import { initTRPC, TRPCError } from '@trpc/server'
-import { prisma as db } from '@template/store'
+import { prisma as db } from '@dpin-uptime/store'
 import { z, ZodError } from 'zod/v4'
 import superjson from 'superjson'
 

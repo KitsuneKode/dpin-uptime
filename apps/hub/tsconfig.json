@@ -1,0 +1,14 @@
+{
+  "extends": "@dpin-uptime/typescript-config/backend.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@dpin-uptime/store": ["../../packages/store/src/*"],
+      "@dpin-uptime/auth": ["../../packages/auth/src/*"],
+      "@dpin-uptime/trpc": ["../../packages/trpc/src/*"],
+      "@dpin-uptime/backend-common": ["../../packages/trpc/backend-common/*"]
+    },
+    "outDir": "dist"
+  }
+}

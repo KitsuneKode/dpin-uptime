@@ -1,5 +1,5 @@
 {
-  "name": "@template/tests",
+  "name": "@dpin-uptime/tests",
   "module": "src/index.ts",
   "type": "module",
   "private": true,

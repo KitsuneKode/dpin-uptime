@@ -25,6 +25,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
+  websites Website[]
+
   @@unique([email])
   @@map("user")
 }
@@ -72,4 +74,38 @@ model Verification {
   updatedAt  DateTime?
 
   @@map("verification")
+}
+
+model Website {
+  id           String        @id @default(cuid())
+  url          String
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  websiteTicks WebsiteTick[]
+  archived     Boolean       @default(false)
+}
+
+model Validator {
+  id           String        @id @default(cuid())
+  publicKey    String
+  location     String
+  ip           String
+  websiteTicks WebsiteTick[]
+}
+
+model WebsiteTick {
+  id          String        @id @default(cuid())
+  websiteId   String
+  website     Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  status      WebsiteStatus
+  latency     Float
+  validatorId String
+  validator   Validator     @relation(fields: [validatorId], references: [id])
+
+  createdAt DateTime @default(now())
+}
+
+enum WebsiteStatus {
+  Bad
+  Good
 }

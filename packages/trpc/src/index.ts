@@ -1,6 +1,6 @@
 import type { inferRouterInputs, inferRouterOutputs } from '@trpc/server'
 import { createExpressMiddleware } from '@trpc/server/adapters/express'
-import { config } from '@template/backend-common/config'
+import { config } from '@dpin-uptime/backend-common/config'
 import type { AppRouter } from './routers/_app'
 import { createCallerFactory } from './trpc'
 import { appRouter } from './routers/_app'

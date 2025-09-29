@@ -1,5 +1,5 @@
 {
-  "extends": "@template/typescript-config/backend.json",
+  "extends": "@dpin-uptime/typescript-config/backend.json",
   "compilerOptions": {
     "types": ["bun"]
   },

@@ -1,11 +1,11 @@
 'use client'
 import { useTRPC } from '@/trpc/client'
 import { useQuery } from '@tanstack/react-query'
-import { authClient } from '@template/auth/client'
 import React, { useReducer, useState } from 'react'
-import { Input } from '@template/ui/components/input'
-import { Label } from '@template/ui/components/label'
-import { Button } from '@template/ui/components/button'
+import { authClient } from '@dpin-uptime/auth/client'
+import { Input } from '@dpin-uptime/ui/components/input'
+import { Label } from '@dpin-uptime/ui/components/label'
+import { Button } from '@dpin-uptime/ui/components/button'
 
 const defaultFormValue = {
   email: '',
@@ -41,7 +41,7 @@ const Demo = () => {
   const [signInState, setSignInState] = useState(false)
   const [signOutState, setSignOutState] = useState(false)
   const [state, dispatch] = useReducer(reducer, defaultFormValue)
-  const data = useQuery(trpc.hello.queryOptions({ text: 'hi' }))
+  const data = useQuery(trpc.user.getUser.queryOptions())
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()

@@ -1,4 +1,4 @@
-# @template/common
+# @dpin-uptime/common
 
 To install dependencies:
 

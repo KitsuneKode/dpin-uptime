@@ -16,4 +16,5 @@ console.log('Configuration loaded:', config.getConfig('apiBaseUrl'))
 export default config
 
 export const API_BASE_URL = config.getConfig('apiBaseUrl')
+export const BASE_URL = config.getConfig('frontendUrl')
 export const NODE_ENV = config.getConfig('nodeEnv')

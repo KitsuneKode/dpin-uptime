@@ -42,7 +42,7 @@ export function ResponseTimeAreaChart() {
   const [selectedLocation, setSelectedLocation] = React.useState<Location>('us-east');
 
   const { data: monitorsResponse, isLoading: monitorsLoading } = useMonitors({ limit: 5 });
-  const monitors = React.useMemo(() => monitorsResponse?.data || [], [monitorsResponse?.data]);
+  const monitors = React.useMemo(() => monitorsResponse?.websites || [], [monitorsResponse?.websites]);
 
   // Create chart config based on monitors
   const chartConfig = React.useMemo(() => {

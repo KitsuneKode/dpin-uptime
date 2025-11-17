@@ -1,15 +1,18 @@
+import { privateKey } from './utils/config'
 import { Keypair } from '@solana/web3.js'
-import nacl from 'tweetnacl'
 import nacl_util from 'tweetnacl-util'
 import { randomUUID } from 'crypto'
-
+import nacl from 'tweetnacl'
+import bs58 from 'bs58'
 // Configuration
-const HUB_URL = process.env.HUB_URL || 'ws://localhost:8080'
+const HUB_URL = process.env.HUB_URL || 'ws://localhost:8082'
 const VALIDATOR_IP = process.env.VALIDATOR_IP || 'localhost'
 
 // Generate or load Solana keypair
 // In production, you'd load this from a secure location
-const keypair = Keypair.generate()
+// const keypair = Keypair.generate()
+
+const keypair = Keypair.fromSecretKey(bs58.decode(privateKey))
 
 console.log('=== Validator Starting ===')
 console.log(`Public Key: ${keypair.publicKey.toBase58()}`)
@@ -30,9 +33,7 @@ function signMessage(message: string): string {
 /**
  * Ping a website and measure response time
  */
-async function pingWebsite(
-  url: string
-): Promise<{ status: 'Good' | 'Bad'; latency: number }> {
+async function pingWebsite(url: string): Promise<{ status: 'Good' | 'Bad'; latency: number }> {
   const startTime = Date.now()
 
   try {

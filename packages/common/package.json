@@ -18,15 +18,15 @@
   "license": "ISC",
   "devDependencies": {
     "@dpin-uptime/typescript-config": "*",
-    "@types/bun": "^1.2.23",
+    "@types/bun": "^1.3.2",
     "@types/winston": "^2.4.4"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
-    "winston": "^3.17.0",
-    "zod": "^4.0.0"
+    "winston": "^3.18.3",
+    "zod": "^4.1.12"
   },
   "peerDependencies": {
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.3"
   }
 }

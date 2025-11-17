@@ -1,22 +1,23 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { cn } from '@dpin-uptime/ui/lib/utils';
-import { Badge } from '@dpin-uptime/ui/components/badge';
-import { useIncidents, useDashboardMetrics } from '@/hooks/api';
-import { 
-  LayoutDashboard, 
-  Monitor, 
-  AlertTriangle, 
-  Globe, 
+import Link from 'next/link'
+import * as React from 'react'
+import { usePathname } from 'next/navigation'
+import { cn } from '@dpin-uptime/ui/lib/utils'
+import { Badge } from '@dpin-uptime/ui/components/badge'
+import { useIncidents, useDashboardMetrics } from '@/hooks/api'
+import {
+  LayoutDashboard,
+  Monitor,
+  AlertTriangle,
+  Globe,
   Activity,
   BarChart3,
   Settings,
   HelpCircle,
-  Zap
-} from 'lucide-react';
+  Zap,
+  Wallet,
+} from 'lucide-react'
 
 const navigation = [
   {
@@ -41,6 +42,11 @@ const navigation = [
     icon: Globe,
   },
   {
+    name: 'Validator',
+    href: '/validator',
+    icon: Wallet,
+  },
+  {
     name: 'Heartbeats',
     href: '/dashboard/heartbeats',
     icon: Activity,
@@ -52,7 +58,7 @@ const navigation = [
     icon: BarChart3,
     disabled: true,
   },
-];
+]
 
 const bottomNavigation = [
   {
@@ -67,32 +73,32 @@ const bottomNavigation = [
     icon: HelpCircle,
     disabled: true,
   },
-];
+]
 
 export function Sidebar() {
-  const pathname = usePathname();
-  const { data: metricsResponse } = useDashboardMetrics();
-  const { data: incidentsResponse } = useIncidents({ status: 'investigating' });
-  
-  const metrics = metricsResponse?.data;
-  const activeIncidents = incidentsResponse?.data?.length || 0;
+  const pathname = usePathname()
+  const { data: metricsResponse } = useDashboardMetrics()
+  const { data: incidentsResponse } = useIncidents({ status: 'OPEN' })
+
+  const metrics = metricsResponse?.data
+  const activeIncidents = incidentsResponse?.data?.length || 0
 
   const getBadgeValue = (badgeType: string) => {
     switch (badgeType) {
       case 'activeIncidents':
-        return activeIncidents > 0 ? activeIncidents : null;
+        return activeIncidents > 0 ? activeIncidents : null
       default:
-        return null;
+        return null
     }
-  };
+  }
 
   return (
-    <div className="flex h-full w-64 flex-col bg-background border-r">
+    <div className="bg-background flex h-full w-64 flex-col border-r">
       {/* Logo */}
-      <div className="flex h-16 items-center px-6 border-b">
+      <div className="flex h-16 items-center border-b px-6">
         <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
-            <Zap className="h-5 w-5 text-primary-foreground" />
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+            <Zap className="text-primary-foreground h-5 w-5" />
           </div>
           <span className="text-lg font-semibold">Uptime</span>
         </div>
@@ -102,9 +108,10 @@ export function Sidebar() {
       <nav className="flex-1 space-y-1 p-4">
         <div className="space-y-1">
           {navigation.map((item) => {
-            const isActive = pathname === item.href || 
-              (item.href !== '/dashboard' && pathname.startsWith(item.href));
-            const badgeValue = item.badge ? getBadgeValue(item.badge) : null;
+            const isActive =
+              pathname === item.href ||
+              (item.href !== '/dashboard' && pathname.startsWith(item.href))
+            const badgeValue = item.badge ? getBadgeValue(item.badge) : null
 
             return (
               <Link
@@ -115,8 +122,8 @@ export function Sidebar() {
                   isActive
                     ? 'bg-primary text-primary-foreground'
                     : item.disabled
-                    ? 'text-muted-foreground cursor-not-allowed'
-                    : 'text-foreground hover:bg-muted hover:text-foreground'
+                      ? 'text-muted-foreground cursor-not-allowed'
+                      : 'text-foreground hover:bg-muted hover:text-foreground',
                 )}
                 onClick={item.disabled ? (e) => e.preventDefault() : undefined}
               >
@@ -125,15 +132,15 @@ export function Sidebar() {
                   <span>{item.name}</span>
                 </div>
                 {badgeValue && (
-                  <Badge 
-                    variant={isActive ? 'secondary' : 'destructive'} 
+                  <Badge
+                    variant={isActive ? 'secondary' : 'destructive'}
                     className="h-5 px-1.5 text-xs"
                   >
                     {badgeValue}
                   </Badge>
                 )}
               </Link>
-            );
+            )
           })}
         </div>
       </nav>
@@ -149,7 +156,7 @@ export function Sidebar() {
                 'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
                 item.disabled
                   ? 'text-muted-foreground cursor-not-allowed'
-                  : 'text-foreground hover:bg-muted hover:text-foreground'
+                  : 'text-foreground hover:bg-muted hover:text-foreground',
               )}
               onClick={item.disabled ? (e) => e.preventDefault() : undefined}
             >
@@ -162,8 +169,8 @@ export function Sidebar() {
 
       {/* Status Summary */}
       <div className="border-t p-4">
-        <div className="rounded-lg bg-muted p-3">
-          <div className="text-xs font-medium text-muted-foreground mb-2">
+        <div className="bg-muted rounded-lg p-3">
+          <div className="text-muted-foreground mb-2 text-xs font-medium">
             System Status
           </div>
           <div className="space-y-1 text-xs">
@@ -179,10 +186,12 @@ export function Sidebar() {
             </div>
             <div className="flex justify-between">
               <span>Incidents:</span>
-              <span className={cn(
-                'font-medium',
-                activeIncidents > 0 ? 'text-red-600' : 'text-green-600'
-              )}>
+              <span
+                className={cn(
+                  'font-medium',
+                  activeIncidents > 0 ? 'text-red-600' : 'text-green-600',
+                )}
+              >
                 {activeIncidents}
               </span>
             </div>
@@ -190,5 +199,5 @@ export function Sidebar() {
         </div>
       </div>
     </div>
-  );
+  )
 }

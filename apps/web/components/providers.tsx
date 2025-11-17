@@ -4,6 +4,7 @@ import * as React from 'react'
 import { Toaster } from '@dpin-uptime/ui/components/sonner'
 import { ThemeProvider as NextThemesProvider } from 'next-themes'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { SolanaWalletProvider } from './providers/wallet-provider'
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const [queryClient] = React.useState(() => new QueryClient({
@@ -24,7 +25,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
       disableTransitionOnChange
       enableColorScheme
     >
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <SolanaWalletProvider>{children}</SolanaWalletProvider>
+      </QueryClientProvider>
       <Toaster richColors />
     </NextThemesProvider>
   )

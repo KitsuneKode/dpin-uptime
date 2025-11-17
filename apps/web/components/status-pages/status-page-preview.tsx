@@ -3,9 +3,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
 import { Badge } from '@dpin-uptime/ui/components/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
+import { UptimeStatusBar } from '@/components/ui/uptime-status-bar';
 import { useMonitors } from '@/hooks/api';
+import { useQuery } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 import { formatDistanceToNow } from 'date-fns';
-import type { StatusPage } from '@/lib/types';
+import type { StatusPage, WebsiteTick } from '@/lib/types';
 
 interface StatusPagePreviewProps {
   statusPage: StatusPage;
@@ -13,17 +16,17 @@ interface StatusPagePreviewProps {
 
 export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
   const { data: monitorsResponse } = useMonitors({ limit: 100 });
-  const allMonitors = monitorsResponse?.data || [];
-  
+  const allMonitors = monitorsResponse?.websites || [];
+
   // Filter monitors that are included in this status page
-  const selectedMonitors = allMonitors.filter(monitor => 
+  const selectedMonitors = allMonitors.filter((monitor) =>
     statusPage.monitors.includes(monitor.id)
   );
 
-  const overallStatus = selectedMonitors.every(m => m.status === 'up') 
-    ? 'operational' 
-    : selectedMonitors.some(m => m.status === 'down') 
-    ? 'major-outage' 
+  const overallStatus = selectedMonitors.every((m) => m.status === 'up')
+    ? 'operational'
+    : selectedMonitors.some((m) => m.status === 'down')
+    ? 'major-outage'
     : 'partial-outage';
 
   const statusConfig = {
@@ -82,33 +85,7 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
                 </div>
               ) : (
                 selectedMonitors.map((monitor) => (
-                  <div 
-                    key={monitor.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center gap-3">
-                      <StatusIndicator status={monitor.status} size="md" />
-                      <div>
-                        <h3 className="font-medium text-foreground">
-                          {monitor.name}
-                        </h3>
-                        <p className="text-sm text-muted-foreground">
-                          {monitor.url}
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <div className="text-right">
-                      <div className="text-sm font-medium">
-                        {monitor.status === 'up' ? 'Operational' : 
-                         monitor.status === 'down' ? 'Down' :
-                         monitor.status === 'degraded' ? 'Degraded' : 'Paused'}
-                      </div>
-                      <div className="text-xs text-muted-foreground">
-                        {monitor.responseTime}ms • {formatDistanceToNow(new Date(monitor.lastChecked), { addSuffix: true })}
-                      </div>
-                    </div>
-                  </div>
+                  <MonitorStatusRow key={monitor.id} monitor={monitor} />
                 ))
               )}
             </div>
@@ -123,6 +100,55 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+// Monitor status row component with uptime bar
+function MonitorStatusRow({ monitor }: { monitor: any }) {
+  // Fetch ticks for this monitor
+  const { data: ticksResponse } = useQuery({
+    queryKey: ['monitor-ticks', monitor.id],
+    queryFn: async () => {
+      const response = await api.getMonitorTicks(monitor.id);
+      return response;
+    },
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
+
+  const ticks: WebsiteTick[] = ticksResponse?.data || [];
+
+  return (
+    <div className="space-y-3 p-4 border rounded-lg">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <StatusIndicator status={monitor.status} size="md" />
+          <div>
+            <h3 className="font-medium text-foreground">
+              {monitor.name}
+            </h3>
+            <p className="text-sm text-muted-foreground">
+              {monitor.url}
+            </p>
+          </div>
+        </div>
+
+        <div className="text-right">
+          <div className="text-sm font-medium">
+            {monitor.status === 'up' ? 'Operational' :
+             monitor.status === 'down' ? 'Down' :
+             monitor.status === 'degraded' ? 'Degraded' : 'Paused'}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            {monitor.responseTime}ms • {formatDistanceToNow(new Date(monitor.lastChecked), { addSuffix: true })}
+          </div>
+        </div>
+      </div>
+
+      {/* Uptime bar */}
+      {ticks.length > 0 && (
+        <UptimeStatusBar ticks={ticks} days={90} />
+      )}
     </div>
   );
 }

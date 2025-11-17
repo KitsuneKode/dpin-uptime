@@ -37,9 +37,11 @@ class ApiClient {
         ...options.headers,
       },
       ...options,
+      credentials: 'include', // Include cookies for authentication
     }
 
     try {
+      console.log(`[${NODE_ENV}] API Request:`, { url, config })
       const response = await fetch(url, config)
 
       if (!response.ok) {
@@ -66,10 +68,13 @@ class ApiClient {
   ): Promise<ApiResponse<ResponseTimeData[]>> {
     const searchParams = new URLSearchParams()
     if (params.period) searchParams.append('period', params.period)
-    if (params.monitorIds) searchParams.append('monitorIds', params.monitorIds.join(','))
+    if (params.monitorIds)
+      searchParams.append('monitorIds', params.monitorIds.join(','))
 
     const query = searchParams.toString()
-    return this.request(`/api/v1/dashboard/response-times${query ? `?${query}` : ''}`)
+    return this.request(
+      `/api/v1/dashboard/response-times${query ? `?${query}` : ''}`,
+    )
   }
 
   async getUptimeStats(): Promise<ApiResponse<UptimeStats[]>> {
@@ -97,15 +102,14 @@ class ApiClient {
     return this.request(`/api/v1/monitor?id=${id}`)
   }
 
-  async createMonitor(data: CreateMonitorData): Promise<{ success: boolean; message: string }> {
-    const response = await this.request<string>('/api/v1/monitor', {
+  async createMonitor(
+    data: CreateMonitorData,
+  ): Promise<{ success: boolean; message: string } & Partial<Monitor>> {
+    const response = await this.request<any>('/api/v1/monitor', {
       method: 'POST',
       body: JSON.stringify(data),
     })
-    return {
-      success: true,
-      message: typeof response === 'string' ? response : 'Monitor created successfully'
-    }
+    return response
   }
 
   async updateMonitor(data: UpdateMonitorData): Promise<ApiResponse<Monitor>> {
@@ -115,15 +119,18 @@ class ApiClient {
     })
   }
 
-  async deleteMonitor(id: string): Promise<{ success: boolean; message: string }> {
-    const response = await this.request<string>('/api/v1/monitor', {
+  async deleteMonitor(
+    id: string,
+  ): Promise<{ success: boolean; message: string }> {
+    const response = await this.request<{ success: boolean; message: string }>('/api/v1/monitor', {
       method: 'DELETE',
       body: JSON.stringify({ websiteId: id }),
     })
-    return {
-      success: true,
-      message: typeof response === 'string' ? response : 'Monitor deleted successfully'
-    }
+    return response
+  }
+
+  async getMonitorTicks(id: string): Promise<ApiResponse<any[]>> {
+    return this.request(`/api/v1/monitor/${id}/ticks`)
   }
 
   async pauseMonitor(id: string): Promise<ApiResponse<Monitor>> {
@@ -173,17 +180,17 @@ class ApiClient {
 
   // Status Pages
   async getStatusPages(): Promise<ApiResponse<StatusPage[]>> {
-    return this.request('/status-pages')
+    return this.request('/api/v1/status-pages')
   }
 
   async getStatusPage(id: string): Promise<ApiResponse<StatusPage>> {
-    return this.request(`/status-pages/${id}`)
+    return this.request(`/api/v1/status-pages/${id}`)
   }
 
   async createStatusPage(
     data: CreateStatusPageData,
   ): Promise<ApiResponse<StatusPage>> {
-    return this.request('/status-pages', {
+    return this.request('/api/v1/status-pages', {
       method: 'POST',
       body: JSON.stringify(data),
     })
@@ -193,14 +200,14 @@ class ApiClient {
     id: string,
     data: UpdateStatusPageData,
   ): Promise<ApiResponse<StatusPage>> {
-    return this.request(`/status-pages/${id}`, {
+    return this.request(`/api/v1/status-pages/${id}`, {
       method: 'PATCH',
       body: JSON.stringify(data),
     })
   }
 
   async deleteStatusPage(id: string): Promise<ApiResponse<void>> {
-    return this.request(`/status-pages/${id}`, {
+    return this.request(`/api/v1/status-pages/${id}`, {
       method: 'DELETE',
     })
   }

@@ -4,11 +4,11 @@ import { PORT } from './utils/config'
 const availableValidators: AvailableValidator[] = []
 
 import type { IncomingMessage } from '@dpin-uptime/common/types'
-import { signupHandler } from './handler/sign-up'
+import { PingScheduler } from './services/ping-scheduler'
 import { validateHandler } from './handler/validate'
+import { signupHandler } from './handler/sign-up'
 import { verifyMessage } from './handler/message'
 import type { AvailableValidator } from './types'
-import { PingScheduler } from './services/ping-scheduler'
 
 const server = Bun.serve<{ user: InferUser }, {}>({
   fetch(req, server) {
@@ -54,7 +54,9 @@ const server = Bun.serve<{ user: InferUser }, {}>({
       if (index !== -1) {
         const validator = availableValidators[index]
         availableValidators.splice(index, 1)
-        console.log(`Validator ${validator.validatorId} disconnected. Remaining: ${availableValidators.length}`)
+        console.log(
+          `Validator ${validator?.validatorId} disconnected. Remaining: ${availableValidators.length}`,
+        )
       }
     },
   },

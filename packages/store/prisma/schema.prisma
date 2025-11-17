@@ -25,7 +25,8 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  monitors Monitor[]
+  monitors    Monitor[]
+  statusPages StatusPage[]
 
   @@unique([email])
   @@map("user")
@@ -87,14 +88,46 @@ model Monitor {
   archived     Boolean       @default(false)
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  statusPages  StatusPageMonitor[]
+}
+
+model StatusPage {
+  id          String              @id @default(cuid())
+  companyName String
+  subdomain   String              @unique
+  logoUrl     String?
+  theme       String              @default("light")
+  userId      String
+  user        User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  monitors    StatusPageMonitor[]
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+}
+
+model StatusPageMonitor {
+  id           String     @id @default(cuid())
+  statusPageId String
+  statusPage   StatusPage @relation(fields: [statusPageId], references: [id], onDelete: Cascade)
+  monitorId    String
+  monitor      Monitor    @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  createdAt    DateTime   @default(now())
+
+  @@unique([statusPageId, monitorId])
 }
 
 model Validator {
-  id           String        @id @default(cuid())
-  publicKey    String
-  location     String
-  ip           String
-  websiteTicks WebsiteTick[]
+  id              String              @id @default(cuid())
+  publicKey       String              @unique
+  location        String
+  ip              String
+  websiteTicks    WebsiteTick[]
+  earnings        ValidatorEarning[]
+  withdrawals     ValidatorWithdrawal[]
+  totalEarned     Float               @default(0)
+  totalWithdrawn  Float               @default(0)
+  pendingBalance  Float               @default(0)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @default(now()) @updatedAt
 }
 
 model WebsiteTick {
@@ -137,4 +170,38 @@ enum IncidentSeverity {
   CRITICAL
   WARNING
   INFO
+}
+
+model ValidatorEarning {
+  id          String   @id @default(cuid())
+  validatorId String
+  validator   Validator @relation(fields: [validatorId], references: [id], onDelete: Cascade)
+  amount      Float    // Amount in SOL or tokens
+  tickId      String?  // Optional: link to the tick that generated this earning
+  description String?
+  createdAt   DateTime @default(now())
+
+  @@index([validatorId, createdAt])
+}
+
+model ValidatorWithdrawal {
+  id              String            @id @default(cuid())
+  validatorId     String
+  validator       Validator         @relation(fields: [validatorId], references: [id], onDelete: Cascade)
+  amount          Float
+  walletAddress   String
+  status          WithdrawalStatus  @default(PENDING)
+  txSignature     String?           // Solana transaction signature
+  errorMessage    String?
+  createdAt       DateTime          @default(now())
+  processedAt     DateTime?
+
+  @@index([validatorId, createdAt])
+}
+
+enum WithdrawalStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
 }

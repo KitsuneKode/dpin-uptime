@@ -38,7 +38,7 @@ export function StatusPageForm({ statusPage, onSuccess, onCancel }: StatusPageFo
   const updateStatusPage = useUpdateStatusPage();
   const { data: monitorsResponse } = useMonitors({ limit: 100 });
 
-  const monitors = monitorsResponse?.data || [];
+  const monitors = monitorsResponse?.websites || [];
 
   const form = useForm<StatusPageFormData>({
     resolver: zodResolver(statusPageSchema),

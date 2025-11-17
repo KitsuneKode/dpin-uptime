@@ -55,15 +55,15 @@ export const useMonitor = (id: string): UseQueryResult<ApiResponse<Monitor>> => 
 
 // Response time data query
 export const useResponseTimeData = (
-  monitorId: string, 
-  period: TimePeriod, 
+  monitorId: string,
+  period: TimePeriod,
   location?: Location
 ): UseQueryResult<ApiResponse<ResponseTimeData[]>> => {
   return useQuery({
     queryKey: monitorKeys.responseTime(monitorId, period, location),
     queryFn: async () => {
       try {
-        const res = await api.getResponseTimeData(monitorId, { period, location });
+        const res = await api.getResponseTimeData({ period, monitorIds: [monitorId] });
         if (!res?.data?.length) {
           const data = generateMockResponseTimeData(monitorId, period, location || 'us-east');
           return { data, success: true, message: 'fallback-mock' } as ApiResponse<ResponseTimeData[]>;
@@ -84,16 +84,30 @@ export const useResponseTimeData = (
 export const useUptimeStats = (monitorId: string, period: TimePeriod): UseQueryResult<ApiResponse<UptimeStats>> => {
   return useQuery({
     queryKey: monitorKeys.uptime(monitorId, period),
-    queryFn: () => api.getUptimeStats(monitorId, period),
+    queryFn: async () => {
+      // For now, return a mock since the backend doesn't have this endpoint yet
+      // TODO: Implement backend endpoint for per-monitor uptime stats
+      return {
+        data: {
+          period: period === 'day' ? 'today' : period === 'week' ? 'week' : 'month',
+          availability: 99.95,
+          downtime: '5m',
+          incidents: 1,
+          longestIncident: '3m',
+          avgIncident: '2m',
+        } as UptimeStats,
+        success: true,
+      } as ApiResponse<UptimeStats>;
+    },
     enabled: !!monitorId && !!period,
     staleTime: 60 * 1000,
   });
 };
 
 // Create monitor mutation
-export const useCreateMonitor = (): UseMutationResult<ApiResponse<Monitor>, Error, CreateMonitorData> => {
+export const useCreateMonitor = (): UseMutationResult<{ success: boolean; message: string } & Partial<Monitor>, Error, CreateMonitorData> => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (data: CreateMonitorData) => api.createMonitor(data),
     onSuccess: () => {
@@ -116,9 +130,9 @@ export const useUpdateMonitor = (): UseMutationResult<ApiResponse<Monitor>, Erro
 };
 
 // Delete monitor mutation
-export const useDeleteMonitor = (): UseMutationResult<ApiResponse<void>, Error, string> => {
+export const useDeleteMonitor = (): UseMutationResult<{ success: boolean; message: string }, Error, string> => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (id: string) => api.deleteMonitor(id),
     onSuccess: () => {

@@ -33,13 +33,25 @@ router.get('/dashboard/metrics', async (req, res) => {
  * GET /api/v1/dashboard/response-times
  * Get response time data for charts
  * Query params:
- *   - period: 24h | 7d | 30d (default: 24h)
+ *   - period: day | week | month (or 24h | 7d | 30d) (default: 24h)
  *   - monitorIds: comma-separated list of monitor IDs
  */
 router.get('/dashboard/response-times', async (req, res) => {
   try {
     const userId = req.user!.id
-    const period = (req.query.period as '24h' | '7d' | '30d') || '24h'
+    const periodParam = (req.query.period as string) || '24h'
+
+    // Map frontend period format to backend format
+    const periodMap: Record<string, '24h' | '7d' | '30d'> = {
+      'day': '24h',
+      'week': '7d',
+      'month': '30d',
+      '24h': '24h',
+      '7d': '7d',
+      '30d': '30d',
+    }
+
+    const period = periodMap[periodParam] || '24h'
     const monitorIdsParam = req.query.monitorIds as string | undefined
     const monitorIds = monitorIdsParam ? monitorIdsParam.split(',') : undefined
 

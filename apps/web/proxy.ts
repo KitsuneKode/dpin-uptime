@@ -2,7 +2,7 @@ import { headers } from 'next/headers'
 import { auth } from '@dpin-uptime/auth/server'
 import { NextRequest, NextResponse } from 'next/server'
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -21,6 +21,6 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  runtime: 'nodejs',
-  matcher: ['/dashboard', '/sign-in'], // Apply middleware to specific routes
+  // Apply middleware to specific routes
+  matcher: ['/dashboard', '/sign-in']
 }

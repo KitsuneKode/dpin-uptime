@@ -173,7 +173,7 @@ export async function getResponseTimeData(
   const since = new Date(Date.now() - periodMap[period])
 
   const whereClause: any = {
-    monitor: {
+    website: {
       userId,
       archived: false,
     },
@@ -194,7 +194,7 @@ export async function getResponseTimeData(
       createdAt: 'asc',
     },
     include: {
-      monitor: true,
+      website: true,
     },
   })
 

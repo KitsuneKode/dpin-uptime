@@ -17,26 +17,35 @@
     "@dpin-uptime/store": "*",
     "@dpin-uptime/ui": "*",
     "@radix-ui/react-accordion": "^1.2.12",
-    "@tanstack/react-query": "^5.90.2",
+    "@solana/wallet-adapter-base": "^0.9.27",
+    "@solana/wallet-adapter-react": "^0.15.39",
+    "@solana/wallet-adapter-react-ui": "^0.9.39",
+    "@solana/wallet-adapter-wallets": "^0.19.37",
+    "@solana/web3.js": "^1.98.4",
+    "@tanstack/react-query": "^5.90.10",
     "date-fns": "^4.1.0",
-    "lucide-react": "^0.544.0",
-    "motion": "^12.23.22",
-    "next": "^15.5.4",
+    "lucide-react": "^0.554.0",
+    "motion": "^12.23.24",
+    "next": "16.0.3",
     "next-themes": "^0.4.6",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1",
-    "zod": "^4.1.11"
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
     "@dpin-uptime/eslint-config": "*",
     "@dpin-uptime/typescript-config": "*",
-    "@types/node": "^24.5.2",
-    "@types/react": "19.1.15",
-    "@types/react-dom": "19.1.9",
-    "eslint": "^9.36.0",
+    "@types/node": "^24.10.1",
+    "@types/react": "19.2.5",
+    "@types/react-dom": "19.2.3",
+    "eslint": "^9.39.1",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
-    "prettier-plugin-tailwindcss": "^0.6.14",
-    "typescript": "^5.9.2"
+    "prettier-plugin-tailwindcss": "^0.7.1",
+    "typescript": "^5.9.3"
+  },
+  "overrides": {
+    "@types/react": "19.2.5",
+    "@types/react-dom": "19.2.3"
   }
 }

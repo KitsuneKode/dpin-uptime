@@ -3,6 +3,7 @@
 import { z } from 'zod'
 import Link from 'next/link'
 import { useState } from 'react'
+import { BASE_URL } from '@/utils/config'
 import { useForm } from 'react-hook-form'
 import { Eye, EyeOff } from 'lucide-react'
 import { Variants, motion } from 'motion/react'
@@ -227,7 +228,8 @@ export default function SignInPage() {
                 onClick={() =>
                   authClient.signIn.social({
                     provider: 'google',
-                    callbackURL: '/dashboard',
+                    callbackURL: `${BASE_URL}/dashboard`,
+                    errorCallbackURL: `${BASE_URL}/sign-in`,
                   })
                 }
               >
@@ -257,8 +259,8 @@ export default function SignInPage() {
                 onClick={() =>
                   authClient.signIn.social({
                     provider: 'github',
-                    callbackURL: '/dashboard',
-                    errorCallbackURL: '/sign-in',
+                    callbackURL: `${BASE_URL}/dashboard`,
+                    errorCallbackURL: `${BASE_URL}/sign-in`,
                   })
                 }
               >

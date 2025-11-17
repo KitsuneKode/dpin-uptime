@@ -1,7 +1,7 @@
 import { ConfigLoader } from '@dpin-uptime/common/config-loader'
 
 const hubConfigSchema = {
-  port: () => Number(process.env.PORT) || 8080,
+  port: () => Number(process.env.PORT) || 8082,
   frontendUrl: () => process.env.FRONTEND_URL || '',
   databaseUrl: () => process.env.DATABASE_URL || '',
   environment: () => process.env.NODE_ENV || '',

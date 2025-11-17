@@ -50,6 +50,32 @@ export const validateHandler = async ({
       `✓ Saved tick for website ${websiteId}: ${status} (${latency}ms)`
     )
 
+    // Track earnings for the validator (0.0001 SOL per validation)
+    const earningAmount = 0.0001
+    await prisma.validatorEarning.create({
+      data: {
+        validatorId,
+        amount: earningAmount,
+        tickId: tick.id,
+        description: `Validation for ${websiteId}`,
+      },
+    })
+
+    // Update validator's balance
+    await prisma.validator.update({
+      where: { id: validatorId },
+      data: {
+        totalEarned: {
+          increment: earningAmount,
+        },
+        pendingBalance: {
+          increment: earningAmount,
+        },
+      },
+    })
+
+    console.log(`💰 Credited ${earningAmount} SOL to validator ${validatorId}`)
+
     // Check for incident detection (multiple consecutive failures)
     await checkAndCreateIncident(websiteId)
 

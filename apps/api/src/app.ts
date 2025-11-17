@@ -1,7 +1,9 @@
 import { errorHandlerMiddleware } from '@/middlewares/error-handler-middleware'
 import { timingMiddleWare } from '@/middlewares/timing-middleware'
 import { toNodeHandler, auth } from '@dpin-uptime/auth/server'
-import { websiteRouter } from './routes/website-route'
+import { websiteRouter } from './routes/monitor-route'
+import { dashboardRouter } from './routes/dashboard-route'
+import { incidentRouter } from './routes/incident-route'
 // import { expressMiddleWare } from '@dpin-uptime/trpc'
 import config from '@/utils/config'
 import express from 'express'
@@ -9,7 +11,7 @@ import cors from 'cors'
 
 const app = express()
 
-const routers = [websiteRouter]
+const routers = [websiteRouter, dashboardRouter, incidentRouter]
 
 app.use(
   cors({

@@ -66,28 +66,31 @@ export function ResponseTimeAreaChart() {
   const query2 = useResponseTimeData(monitor2?.id || '', selectedPeriod, selectedLocation);
   const query3 = useResponseTimeData(monitor3?.id || '', selectedPeriod, selectedLocation);
 
-  const responseTimeQueries = [query1, query2, query3].filter((query, index) => 
-    monitors[index] && monitors[index]?.id
-  );
+  // Pair monitors with their queries (up to 3)
+  const series = React.useMemo(() => {
+    const queries = [query1, query2, query3];
+    return monitors.slice(0, 3).map((monitor, index) => ({ monitor, query: queries[index]! }))
+  }, [monitors, query1, query2, query3]);
 
-  const isLoading = monitorsLoading || responseTimeQueries.some(query => query.isLoading);
+  // Loading only if we have no data for any series yet
+  const isLoading = monitorsLoading || (series.length > 0 && series.every(s => s.query.isLoading && !s.query.data));
 
   // Combine data from all monitors
-  const chartData = React.useMemo(() => {
-    if (!responseTimeQueries.length || responseTimeQueries.some(query => !query.data)) {
-      return [];
+  const { chartData, monitorsWithData } = React.useMemo(() => {
+    if (!series.length) {
+      return { chartData: [], monitorsWithData: [] as typeof monitors };
     }
 
     const timeMap = new Map<string, Record<string, unknown>>();
+    const withData: typeof monitors = [];
 
-    responseTimeQueries.forEach((query, index) => {
-      const monitor = monitors[index];
-      if (!monitor) return;
-      
-      const data = query.data?.data || [];
+    series.forEach(({ monitor, query }) => {
+      const points = query.data?.data || [];
+      if (!monitor || points.length === 0) return;
+      withData.push(monitor);
       const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
 
-      data.forEach(point => {
+      points.forEach(point => {
         const timestamp = point.timestamp;
         if (!timeMap.has(timestamp)) {
           timeMap.set(timestamp, { timestamp });
@@ -96,10 +99,12 @@ export function ResponseTimeAreaChart() {
       });
     });
 
-    return Array.from(timeMap.values()).sort((a, b) => 
+    const combined = Array.from(timeMap.values()).sort((a, b) => 
       new Date(a.timestamp as string).getTime() - new Date(b.timestamp as string).getTime()
     );
-  }, [responseTimeQueries, monitors]);
+
+    return { chartData: combined, monitorsWithData: withData };
+  }, [series]);
 
   if (isLoading) {
     return (
@@ -167,7 +172,7 @@ export function ResponseTimeAreaChart() {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <defs>
-                  {monitors.slice(0, 3).map((monitor, index) => {
+                  {monitorsWithData.slice(0, 3).map((monitor, index) => {
                     const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
                     return (
                       <linearGradient key={safeName} id={`gradient-${safeName}`} x1="0" y1="0" x2="0" y2="1">
@@ -200,7 +205,7 @@ export function ResponseTimeAreaChart() {
                     />
                   } 
                 />
-                {monitors.slice(0, 3).map((monitor, index) => {
+                {monitorsWithData.slice(0, 3).map((monitor, index) => {
                   const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
                   return (
                     <Area
@@ -210,7 +215,7 @@ export function ResponseTimeAreaChart() {
                       stroke={chartColors[index]}
                       strokeWidth={2}
                       fill={`url(#gradient-${safeName})`}
-                      connectNulls={false}
+                      connectNulls={true}
                     />
                   );
                 })}

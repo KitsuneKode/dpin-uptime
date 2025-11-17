@@ -4,7 +4,6 @@ import { betterAuth } from 'better-auth'
 export { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { nextCookies } from 'better-auth/next-js'
-export type { InferSession, InferUser } from 'better-auth'
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
@@ -36,3 +35,8 @@ export const auth = betterAuth({
     },
   },
 })
+
+type InferSession = typeof auth.$Infer.Session
+type InferUser = typeof auth.$Infer.Session.user
+
+export type { InferUser, InferSession }

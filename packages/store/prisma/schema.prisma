@@ -25,7 +25,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
 
-  websites Website[]
+  monitors Monitor[]
 
   @@unique([email])
   @@map("user")
@@ -76,13 +76,17 @@ model Verification {
   @@map("verification")
 }
 
-model Website {
+model Monitor {
   id           String        @id @default(cuid())
   url          String
+  name         String?
   userId       String
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   websiteTicks WebsiteTick[]
+  incidents    Incident[]
   archived     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Validator {
@@ -96,7 +100,7 @@ model Validator {
 model WebsiteTick {
   id          String        @id @default(cuid())
   websiteId   String
-  website     Website       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  website     Monitor       @relation(fields: [websiteId], references: [id], onDelete: Cascade)
   status      WebsiteStatus
   latency     Float
   validatorId String
@@ -108,4 +112,29 @@ model WebsiteTick {
 enum WebsiteStatus {
   Bad
   Good
+}
+
+model Incident {
+  id          String          @id @default(cuid())
+  monitorId   String
+  monitor     Monitor         @relation(fields: [monitorId], references: [id], onDelete: Cascade)
+  title       String
+  status      IncidentStatus  @default(OPEN)
+  severity    IncidentSeverity @default(CRITICAL)
+  startedAt   DateTime        @default(now())
+  resolvedAt  DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+}
+
+enum IncidentStatus {
+  OPEN
+  ACKNOWLEDGED
+  RESOLVED
+}
+
+enum IncidentSeverity {
+  CRITICAL
+  WARNING
+  INFO
 }

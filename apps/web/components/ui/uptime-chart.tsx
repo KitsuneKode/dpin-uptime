@@ -43,7 +43,7 @@ export function UptimeChart({
           </CardHeader>
         )}
         <CardContent>
-          <Skeleton className={`w-full h-[${height}px]`} />
+          <Skeleton className="w-full" style={{ height }} />
         </CardContent>
       </Card>
     );

@@ -1,7 +1,6 @@
 import { ConfigLoader } from '@dpin-uptime/common/config-loader'
 
 const hubConfigSchema = {
-  jwtSecret: () => process.env.JWT_SECRET || '',
   port: () => Number(process.env.PORT) || 8080,
   frontendUrl: () => process.env.FRONTEND_URL || '',
   databaseUrl: () => process.env.DATABASE_URL || '',
@@ -9,3 +8,5 @@ const hubConfigSchema = {
 }
 
 export const config = ConfigLoader.getInstance(hubConfigSchema, 'hub')
+
+export const PORT = config.getConfig('port')

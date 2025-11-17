@@ -98,7 +98,7 @@ export function DashboardOverview() {
       )}
       
       {/* Monitor Status Table */}
-      <MonitorTable limit={8} />
+      <MonitorTable limit={8} onCreateMonitor={() => setCreateMonitorOpen(true)} />
 
       {/* Charts and Incidents Grid */}
       <div className="grid gap-6 lg:grid-cols-3">

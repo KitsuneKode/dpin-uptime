@@ -8,6 +8,7 @@ import type {
   UptimeStats,
   StatusPage,
   CreateStatusPageData,
+  UpdateStatusPageData,
   Incident,
   DashboardMetrics,
   TimePeriod,
@@ -26,7 +27,8 @@ import {
 } from './mock-data'
 
 // Simulate network delay
-const delay = (ms: number = 500) => new Promise(resolve => setTimeout(resolve, ms))
+const delay = (ms: number = 500) =>
+  new Promise((resolve) => setTimeout(resolve, ms))
 
 class MockApiClient {
   // Dashboard
@@ -43,36 +45,36 @@ class MockApiClient {
     status?: string
   }): Promise<PaginatedResponse<Monitor>> {
     await delay(400)
-    
+
     let filteredMonitors = [...mockMonitors]
-    
+
     // Apply search filter
     if (params?.search) {
       const searchLower = params.search.toLowerCase()
       filteredMonitors = filteredMonitors.filter(
-        monitor =>
+        (monitor) =>
           monitor.name.toLowerCase().includes(searchLower) ||
-          monitor.url.toLowerCase().includes(searchLower)
+          monitor.url.toLowerCase().includes(searchLower),
       )
     }
-    
+
     // Apply status filter
     if (params?.status && params.status !== 'all') {
       filteredMonitors = filteredMonitors.filter(
-        monitor => monitor.status === params.status
+        (monitor) => monitor.status === params.status,
       )
     }
-    
+
     return wrapPaginatedResponse(
       filteredMonitors,
       params?.page || 1,
-      params?.limit || 10
+      params?.limit || 10,
     )
   }
 
   async getMonitor(id: string): Promise<ApiResponse<Monitor>> {
     await delay(200)
-    const monitor = mockMonitors.find(m => m.id === id)
+    const monitor = mockMonitors.find((m) => m.id === id)
     if (!monitor) {
       throw new Error(`Monitor with id ${id} not found`)
     }
@@ -81,7 +83,7 @@ class MockApiClient {
 
   async createMonitor(data: CreateMonitorData): Promise<ApiResponse<Monitor>> {
     await delay(600)
-    
+
     const newMonitor: Monitor = {
       id: (mockMonitors.length + 1).toString(),
       name: data.name,
@@ -98,66 +100,66 @@ class MockApiClient {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    
+
     mockMonitors.push(newMonitor)
     return wrapApiResponse(newMonitor)
   }
 
   async updateMonitor(data: UpdateMonitorData): Promise<ApiResponse<Monitor>> {
     await delay(500)
-    
-    const index = mockMonitors.findIndex(m => m.id === data.id)
+
+    const index = mockMonitors.findIndex((m) => m.id === data.id)
     if (index === -1) {
       throw new Error(`Monitor with id ${data.id} not found`)
     }
-    
+
     const updatedMonitor = {
       ...mockMonitors[index],
       ...data,
       updatedAt: new Date().toISOString(),
     }
-    
+
     mockMonitors[index] = updatedMonitor
     return wrapApiResponse(updatedMonitor)
   }
 
   async deleteMonitor(id: string): Promise<ApiResponse<void>> {
     await delay(400)
-    
-    const index = mockMonitors.findIndex(m => m.id === id)
+
+    const index = mockMonitors.findIndex((m) => m.id === id)
     if (index === -1) {
       throw new Error(`Monitor with id ${id} not found`)
     }
-    
+
     mockMonitors.splice(index, 1)
     return wrapApiResponse(undefined as void)
   }
 
   async pauseMonitor(id: string): Promise<ApiResponse<Monitor>> {
     await delay(300)
-    
-    const monitor = mockMonitors.find(m => m.id === id)
+
+    const monitor = mockMonitors.find((m) => m.id === id)
     if (!monitor) {
       throw new Error(`Monitor with id ${id} not found`)
     }
-    
+
     monitor.status = 'paused'
     monitor.updatedAt = new Date().toISOString()
-    
+
     return wrapApiResponse(monitor)
   }
 
   async resumeMonitor(id: string): Promise<ApiResponse<Monitor>> {
     await delay(300)
-    
-    const monitor = mockMonitors.find(m => m.id === id)
+
+    const monitor = mockMonitors.find((m) => m.id === id)
     if (!monitor) {
       throw new Error(`Monitor with id ${id} not found`)
     }
-    
+
     monitor.status = 'up'
     monitor.updatedAt = new Date().toISOString()
-    
+
     return wrapApiResponse(monitor)
   }
 
@@ -167,32 +169,32 @@ class MockApiClient {
     params: {
       period: TimePeriod
       location?: Location
-    }
+    },
   ): Promise<ApiResponse<ResponseTimeData[]>> {
     await delay(600)
-    
+
     const data = generateMockResponseTimeData(
       monitorId,
       params.period,
-      params.location || 'us-east'
+      params.location || 'us-east',
     )
-    
+
     return wrapApiResponse(data)
   }
 
   // Uptime Stats
   async getUptimeStats(
     monitorId: string,
-    period: TimePeriod
+    period: TimePeriod,
   ): Promise<ApiResponse<UptimeStats>> {
     await delay(400)
-    
+
     const periodMap: Record<TimePeriod, 'today' | 'week' | 'month'> = {
       day: 'today',
       week: 'week',
       month: 'month',
     }
-    
+
     const stats = generateMockUptimeStats(monitorId, periodMap[period])
     return wrapApiResponse(stats)
   }
@@ -205,43 +207,44 @@ class MockApiClient {
     status?: string
   }): Promise<PaginatedResponse<Incident>> {
     await delay(350)
-    
+
     let filteredIncidents = [...mockIncidents]
-    
+
     // Apply monitor filter
     if (params?.monitorId) {
       filteredIncidents = filteredIncidents.filter(
-        incident => incident.monitorId === params.monitorId
+        (incident) => incident.monitorId === params.monitorId,
       )
     }
-    
+
     // Apply status filter
     if (params?.status && params.status !== 'all') {
       filteredIncidents = filteredIncidents.filter(
-        incident => incident.status === params.status
+        (incident) => incident.status === params.status,
       )
     }
-    
+
     // Sort by most recent first
     filteredIncidents.sort(
-      (a, b) => new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime()
+      (a, b) =>
+        new Date(b.startedAt).getTime() - new Date(a.startedAt).getTime(),
     )
-    
+
     return wrapPaginatedResponse(
       filteredIncidents,
       params?.page || 1,
-      params?.limit || 10
+      params?.limit || 10,
     )
   }
 
   async getIncident(id: string): Promise<ApiResponse<Incident>> {
     await delay(250)
-    
-    const incident = mockIncidents.find(i => i.id === id)
+
+    const incident = mockIncidents.find((i) => i.id === id)
     if (!incident) {
       throw new Error(`Incident with id ${id} not found`)
     }
-    
+
     return wrapApiResponse(incident)
   }
 
@@ -253,18 +256,20 @@ class MockApiClient {
 
   async getStatusPage(id: string): Promise<ApiResponse<StatusPage>> {
     await delay(200)
-    
-    const statusPage = mockStatusPages.find(sp => sp.id === id)
+
+    const statusPage = mockStatusPages.find((sp) => sp.id === id)
     if (!statusPage) {
       throw new Error(`Status page with id ${id} not found`)
     }
-    
+
     return wrapApiResponse(statusPage)
   }
 
-  async createStatusPage(data: CreateStatusPageData): Promise<ApiResponse<StatusPage>> {
+  async createStatusPage(
+    data: CreateStatusPageData,
+  ): Promise<ApiResponse<StatusPage>> {
     await delay(700)
-    
+
     const newStatusPage: StatusPage = {
       id: (mockStatusPages.length + 1).toString(),
       companyName: data.companyName,
@@ -275,40 +280,49 @@ class MockApiClient {
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    
+
     mockStatusPages.push(newStatusPage)
     return wrapApiResponse(newStatusPage)
   }
 
   async updateStatusPage(
     id: string,
-    data: Partial<CreateStatusPageData>
+    data: UpdateStatusPageData,
   ): Promise<ApiResponse<StatusPage>> {
     await delay(500)
-    
-    const index = mockStatusPages.findIndex(sp => sp.id === id)
+
+    const index = mockStatusPages.findIndex((sp) => sp.id === id)
     if (index === -1) {
       throw new Error(`Status page with id ${id} not found`)
     }
-    
+
+    // Only apply defined fields from the patch and never override with undefined
+    const entries = Object.entries(data).filter(([key, value]) => {
+      return key !== 'id' && value !== undefined
+    }) as [keyof StatusPage, StatusPage[keyof StatusPage]][]
+
+    const patch = Object.fromEntries(entries) as Partial<StatusPage>
+
+    const existing = mockStatusPages[index]!
     const updatedStatusPage = {
-      ...mockStatusPages[index],
-      ...data,
+      ...existing,
+      ...patch,
       updatedAt: new Date().toISOString(),
-    }
-    
+      id: existing.id,
+    } as StatusPage
+
     mockStatusPages[index] = updatedStatusPage
     return wrapApiResponse(updatedStatusPage)
   }
 
   async deleteStatusPage(id: string): Promise<ApiResponse<void>> {
     await delay(400)
-    
-    const index = mockStatusPages.findIndex(sp => sp.id === id)
+
+    const index = mockStatusPages.findIndex((sp) => sp.id === id)
     if (index === -1) {
       throw new Error(`Status page with id ${id} not found`)
     }
-    
+
     mockStatusPages.splice(index, 1)
     return wrapApiResponse(undefined as void)
   }

@@ -4,24 +4,24 @@ import { Router } from 'express'
 
 const router = Router()
 
-router.use('/website', authMiddleware)
+router.use('/monitor', authMiddleware)
 
-router.post('/website', async (req, res) => {
+router.post('/monitor', async (req, res) => {
   try {
     const { url } = req.body
 
-    const website = await prisma.website.create({
+    const monitor = await prisma.monitor.create({
       data: {
         url,
         userId: req.user.id,
       },
     })
 
-    if (!website) {
-      throw new Error('Website creation failed')
+    if (!monitor) {
+      throw new Error('Monitor creation failed')
     }
 
-    res.status(201).send('Website entry successfully created')
+    res.status(201).send('Monitor entry successfully created')
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
@@ -33,10 +33,10 @@ router.post('/website', async (req, res) => {
   }
 })
 
-router.get('/website/status', async (req, res) => {
+router.get('/monitor/status', async (req, res) => {
   try {
     const websiteId = req.query['id']! as string
-    const ticks = await prisma.website.findMany({
+    const ticks = await prisma.monitor.findMany({
       where: {
         id: websiteId,
         archived: false,
@@ -54,12 +54,12 @@ router.get('/website/status', async (req, res) => {
   }
 })
 
-router.get('/website', async (req, res) => {
+router.get('/monitor', async (req, res) => {
   try {
     const websiteId = req.query['id'] as string
 
     if (!websiteId) {
-      const websites = await prisma.website.findMany({
+      const websites = await prisma.monitor.findMany({
         where: {
           userId: req.user!.id,
           archived: false,
@@ -69,7 +69,7 @@ router.get('/website', async (req, res) => {
       res.status(200).json({ websites })
       return
     } else {
-      const website = await prisma.website.findUnique({
+      const monitor = await prisma.monitor.findUnique({
         where: {
           id: websiteId,
           userId: req.user!.id,
@@ -81,11 +81,11 @@ router.get('/website', async (req, res) => {
   }
 })
 
-router.delete('/website', async (req, res) => {
+router.delete('/monitor', async (req, res) => {
   try {
     const { websiteId } = req.body
 
-    const website = await prisma.website.update({
+    const monitor = await prisma.monitor.update({
       where: {
         id: websiteId,
         archived: false,
@@ -96,8 +96,8 @@ router.delete('/website', async (req, res) => {
       },
     })
 
-    if (!website) {
-      throw new Error('Failed to delete website')
+    if (!monitor) {
+      throw new Error('Failed to delete monitor')
     }
 
     res.status(200).send('Website delete successfully')

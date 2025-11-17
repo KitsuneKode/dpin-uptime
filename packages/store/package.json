@@ -15,13 +15,13 @@
   },
   "devDependencies": {
     "@dpin-uptime/typescript-config": "*",
-    "@types/bun": "^1.2.23"
+    "@types/bun": "^1.2.23",
+    "prisma": "^6.19.0"
   },
   "peerDependencies": {
     "typescript": "^5.9.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.11.1",
-    "prisma": "^6.11.1"
+    "@prisma/client": "6.19.0"
   }
 }

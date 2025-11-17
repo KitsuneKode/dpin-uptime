@@ -14,20 +14,19 @@ import { formatDistanceToNow } from 'date-fns';
 import { AlertTriangle, Clock, CheckCircle, Search } from 'lucide-react';
 
 const severityConfig = {
-  minor: { color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', icon: Clock },
-  major: { color: 'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300', icon: AlertTriangle },
-  critical: { color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300', icon: AlertTriangle },
+  INFO: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', icon: Clock },
+  WARNING: { color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', icon: AlertTriangle },
+  CRITICAL: { color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300', icon: AlertTriangle },
 } as const;
 
 const statusConfig = {
-  investigating: { color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300', icon: Search },
-  identified: { color: 'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300', icon: AlertTriangle },
-  monitoring: { color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', icon: Clock },
-  resolved: { color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', icon: CheckCircle },
+  OPEN: { color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300', label: 'Open', icon: AlertTriangle },
+  ACKNOWLEDGED: { color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300', label: 'Acknowledged', icon: Clock },
+  RESOLVED: { color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300', label: 'Resolved', icon: CheckCircle },
 } as const;
 
 export default function IncidentsPage() {
-  const [status, setStatus] = React.useState<'all' | 'investigating' | 'identified' | 'monitoring' | 'resolved'>('all');
+  const [status, setStatus] = React.useState<'all' | 'OPEN' | 'ACKNOWLEDGED' | 'RESOLVED'>('all');
   const [selected, setSelected] = React.useState<Incident | null>(null);
 
   const { data: incidentsResponse, isLoading } = useIncidents({
@@ -36,7 +35,7 @@ export default function IncidentsPage() {
   });
 
   const incidents = incidentsResponse?.data || [];
-  const activeIncidents = incidents.filter(i => i.status !== 'resolved');
+  const activeIncidents = incidents.filter(i => i.status !== 'RESOLVED');
 
   return (
     <div className="space-y-6">
@@ -51,10 +50,9 @@ export default function IncidentsPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">All</SelectItem>
-                  <SelectItem value="investigating">Investigating</SelectItem>
-                  <SelectItem value="identified">Identified</SelectItem>
-                  <SelectItem value="monitoring">Monitoring</SelectItem>
-                  <SelectItem value="resolved">Resolved</SelectItem>
+                  <SelectItem value="OPEN">Open</SelectItem>
+                  <SelectItem value="ACKNOWLEDGED">Acknowledged</SelectItem>
+                  <SelectItem value="RESOLVED">Resolved</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -94,7 +92,7 @@ export default function IncidentsPage() {
                     className="flex items-start justify-between p-4 border rounded-lg hover:bg-muted/50"
                   >
                     <div className="flex items-start gap-3">
-                      <StatusIndicator status={incident.status === 'resolved' ? 'up' : 'down'} size="sm" className="mt-1" />
+                      <StatusIndicator status={incident.status === 'RESOLVED' ? 'up' : 'down'} size="sm" className="mt-1" />
                       <div>
                         <div className="flex items-center gap-2">
                           <h3 className="font-medium text-foreground">{incident.title}</h3>
@@ -104,7 +102,7 @@ export default function IncidentsPage() {
                           </Badge>
                           <Badge variant="outline" className={statusConfig[incident.status].color}>
                             <StatusIcon className="mr-1 h-3 w-3" />
-                            {incident.status}
+                            {statusConfig[incident.status].label}
                           </Badge>
                         </div>
                         <div className="text-xs text-muted-foreground mt-1">
@@ -153,7 +151,7 @@ export default function IncidentsPage() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Badge variant="outline" className={statusConfig[incident.status].color}>
-                      {incident.status}
+                      {statusConfig[incident.status].label}
                     </Badge>
                   </div>
                   <div className="text-right">
@@ -184,26 +182,19 @@ export default function IncidentsPage() {
                   )}
                 </div>
               </div>
-              {selected.description && (
-                <p className="text-sm">{selected.description}</p>
-              )}
-              {selected.updates && selected.updates.length > 0 && (
-                <div className="space-y-2">
-                  <h4 className="font-medium">Timeline</h4>
-                  <div className="space-y-2">
-                    {selected.updates.map(update => (
-                      <div key={update.id} className="flex items-start gap-3 p-3 rounded-md border">
-                        <Badge variant="outline" className={statusConfig[update.status].color}>
-                          {update.status}
-                        </Badge>
-                        <div className="flex-1">
-                          <div className="text-sm">{update.message}</div>
-                          <div className="text-xs text-muted-foreground">
-                            {formatDistanceToNow(new Date(update.createdAt), { addSuffix: true })}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
+              <div className="flex gap-2">
+                <Badge variant="secondary" className={severityConfig[selected.severity].color}>
+                  {selected.severity}
+                </Badge>
+                <Badge variant="outline" className={statusConfig[selected.status].color}>
+                  {statusConfig[selected.status].label}
+                </Badge>
+              </div>
+              {selected.monitor && (
+                <div className="p-3 rounded-md border bg-muted/50">
+                  <div className="text-sm font-medium">Monitor</div>
+                  <div className="text-sm text-muted-foreground mt-1">
+                    {selected.monitor.name || selected.monitor.url}
                   </div>
                 </div>
               )}

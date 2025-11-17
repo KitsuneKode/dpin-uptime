@@ -10,11 +10,11 @@ export function SystemStatusBanner() {
   const { data: incidentsResponse } = useIncidents({ limit: 5 });
   
   const metrics = metricsResponse?.data;
-  const activeIncidents = incidentsResponse?.data?.filter(i => i.status !== 'resolved') || [];
-  
-  const systemStatus = activeIncidents.length === 0 ? 'operational' : 
-    activeIncidents.some(i => i.severity === 'critical') ? 'major-outage' :
-    activeIncidents.some(i => i.severity === 'major') ? 'partial-outage' : 'degraded';
+  const activeIncidents = incidentsResponse?.data?.filter(i => i.status !== 'RESOLVED') || [];
+
+  const systemStatus = activeIncidents.length === 0 ? 'operational' :
+    activeIncidents.some(i => i.severity === 'CRITICAL') ? 'major-outage' :
+    activeIncidents.some(i => i.severity === 'WARNING') ? 'partial-outage' : 'degraded';
 
   const statusConfig = {
     operational: {

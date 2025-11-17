@@ -9,6 +9,7 @@ import { validateHandler } from './handler/validate'
 import { signupHandler } from './handler/sign-up'
 import { verifyMessage } from './handler/message'
 import type { AvailableValidator } from './types'
+import { withdrawalProcessor } from './jobs/withdrawal-processor'
 
 const server = Bun.serve<{ user: InferUser }, {}>({
   fetch(req, server) {
@@ -68,15 +69,20 @@ console.log(`Listening on ${server.hostname}:${PORT}`)
 const pingScheduler = new PingScheduler(availableValidators, 30000) // Ping every 30 seconds
 pingScheduler.start()
 
+// Start the withdrawal processor
+withdrawalProcessor.start()
+
 // Graceful shutdown
 process.on('SIGINT', () => {
   console.log('\nShutting down gracefully...')
   pingScheduler.stop()
+  withdrawalProcessor.stop()
   process.exit(0)
 })
 
 process.on('SIGTERM', () => {
   console.log('\nShutting down gracefully...')
   pingScheduler.stop()
+  withdrawalProcessor.stop()
   process.exit(0)
 })

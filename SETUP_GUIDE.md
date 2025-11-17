@@ -1,4 +1,4 @@
-# DPIN Uptime Monitoring - MVP Setup Guide
+# DPIN Uptime Monitoring - Setup Guide
 
 ## 🎯 Overview
 
@@ -12,6 +12,7 @@ This uptime monitoring system is built with a distributed architecture similar t
 ## 📋 What's Been Implemented
 
 ### ✅ Backend Infrastructure
+
 - [x] Database schema with Prisma (PostgreSQL)
   - Users, Monitors, Validators, WebsiteTicks, Incidents
 - [x] Authentication (Better Auth with email/password + OAuth)
@@ -21,6 +22,7 @@ This uptime monitoring system is built with a distributed architecture similar t
 - [x] WebSocket hub for validator coordination
 
 ### ✅ Core Monitoring System
+
 - [x] Ping scheduler (runs every 30 seconds)
 - [x] Validator registration with Solana signature verification
 - [x] Website health checking with latency measurement
@@ -28,6 +30,7 @@ This uptime monitoring system is built with a distributed architecture similar t
 - [x] Automatic incident resolution when service recovers
 
 ### ✅ Frontend
+
 - [x] Dashboard with real-time metrics
 - [x] Monitor management (create, list, delete)
 - [x] Metrics cards (total monitors, uptime %, incidents, avg response time)
@@ -48,11 +51,13 @@ This uptime monitoring system is built with a distributed architecture similar t
 Create `.env` files for each service:
 
 #### `packages/store/.env`
+
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/dpin-uptime"
 ```
 
 #### `apps/api/.env`
+
 ```env
 PORT=8080
 FRONTEND_URL=http://localhost:3000
@@ -63,6 +68,7 @@ BETTER_AUTH_URL=http://localhost:8080
 ```
 
 #### `apps/hub/.env`
+
 ```env
 PORT=8081
 FRONTEND_URL=http://localhost:3000
@@ -71,6 +77,7 @@ NODE_ENV=development
 ```
 
 #### `apps/web/.env`
+
 ```env
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 NEXT_PUBLIC_API_URL=http://localhost:8080
@@ -80,6 +87,7 @@ NODE_ENV=development
 ```
 
 #### `apps/validator/.env`
+
 ```env
 HUB_URL=ws://localhost:8081
 VALIDATOR_IP=localhost
@@ -107,24 +115,28 @@ bunx prisma generate
 Open **4 separate terminals** and run:
 
 **Terminal 1 - API Server:**
+
 ```bash
 cd apps/api
 bun run dev
 ```
 
 **Terminal 2 - Hub Server:**
+
 ```bash
 cd apps/hub
 bun run dev
 ```
 
 **Terminal 3 - Validator Worker:**
+
 ```bash
 cd apps/validator
 bun run dev
 ```
 
 **Terminal 4 - Web Dashboard:**
+
 ```bash
 cd apps/web
 bun run dev
@@ -188,12 +200,14 @@ Or use the Web UI at http://localhost:3000/dashboard/monitors
 ### 2. Watch the Ping Cycle
 
 Check the Hub logs - you should see:
+
 ```
 Pinging 1 monitor(s) with 1 validator(s)
 → Sent ping request to validator xxx for https://google.com
 ```
 
 Check the Validator logs - you should see:
+
 ```
 → Pinging https://google.com...
 ✓ Result: Good (45ms)
@@ -201,6 +215,7 @@ Check the Validator logs - you should see:
 ```
 
 Check the Hub logs again:
+
 ```
 ✓ Saved tick for website xxx: Good (45ms)
 ```
@@ -208,6 +223,7 @@ Check the Hub logs again:
 ### 3. View Dashboard Metrics
 
 Navigate to http://localhost:3000/dashboard and you'll see:
+
 - Total monitors count
 - Overall uptime percentage
 - Open incidents count
@@ -217,6 +233,7 @@ Navigate to http://localhost:3000/dashboard and you'll see:
 ### 4. Simulate a Failure
 
 Create a monitor with a bad URL:
+
 ```bash
 curl -X POST http://localhost:8080/api/v1/monitor \
   -H "Content-Type: application/json" \
@@ -224,6 +241,7 @@ curl -X POST http://localhost:8080/api/v1/monitor \
 ```
 
 After ~90 seconds (3 ping cycles), check the Hub logs:
+
 ```
 🚨 Created incident xxx for monitor yyy
 ```
@@ -231,17 +249,20 @@ After ~90 seconds (3 ping cycles), check the Hub logs:
 ## 📊 API Endpoints
 
 ### Monitors
+
 - `POST /api/v1/monitor` - Create monitor
 - `GET /api/v1/monitor` - List all monitors
 - `GET /api/v1/monitor?id=xxx` - Get single monitor
 - `DELETE /api/v1/monitor` - Delete monitor (soft delete)
 
 ### Dashboard
+
 - `GET /api/v1/dashboard/metrics` - Overview metrics
 - `GET /api/v1/dashboard/response-times?period=24h&monitorIds=xxx,yyy` - Response time data
 - `GET /api/v1/dashboard/uptime-stats` - Uptime statistics
 
 ### Incidents
+
 - `GET /api/v1/incidents` - List incidents
 - `GET /api/v1/incidents/:id` - Get incident details
 - `PATCH /api/v1/incidents/:id/acknowledge` - Acknowledge incident
@@ -252,6 +273,7 @@ After ~90 seconds (3 ping cycles), check the Hub logs:
 ### Ping Interval
 
 Edit `apps/hub/src/index.ts`:
+
 ```typescript
 const pingScheduler = new PingScheduler(availableValidators, 30000) // milliseconds
 ```
@@ -259,6 +281,7 @@ const pingScheduler = new PingScheduler(availableValidators, 30000) // milliseco
 ### Incident Threshold
 
 Edit `apps/hub/src/handler/validate.ts`:
+
 ```typescript
 // Check if the last 3 ticks are all "Bad"
 const lastThree = recentTicks.slice(0, 3)
@@ -267,6 +290,7 @@ const lastThree = recentTicks.slice(0, 3)
 ### Timeout for Website Pings
 
 Edit `apps/validator/src/index.ts`:
+
 ```typescript
 signal: AbortSignal.timeout(10000), // 10 second timeout
 ```
@@ -301,6 +325,7 @@ signal: AbortSignal.timeout(10000), // 10 second timeout
 ## 🚀 Next Steps
 
 ### Features to Implement
+
 - [ ] Email notifications for incidents
 - [ ] Webhook integrations
 - [ ] Public status pages
@@ -314,6 +339,7 @@ signal: AbortSignal.timeout(10000), // 10 second timeout
 - [ ] SSL certificate monitoring
 
 ### Production Considerations
+
 - [ ] Docker Compose setup
 - [ ] Kubernetes deployment
 - [ ] Load balancing for validators
@@ -327,22 +353,26 @@ signal: AbortSignal.timeout(10000), // 10 second timeout
 ## 📚 Architecture Decisions
 
 ### Why Bun for Hub and Validator?
+
 - Native WebSocket support
 - Excellent performance for I/O operations
 - Fast startup time for validators
 - Built-in TypeScript support
 
 ### Why Solana Keypairs for Validators?
+
 - Cryptographic proof of validator identity
 - Prevents spoofing of validation results
 - Foundation for future token-based incentives
 
 ### Why WebSocket for Validator Communication?
+
 - Persistent connections for low-latency commands
 - Push-based architecture (hub → validator)
 - Easier scaling than polling
 
 ### Why Separate Hub and API?
+
 - API handles user requests (CRUD operations)
 - Hub handles real-time monitoring coordination
 - Clear separation of concerns
@@ -351,6 +381,7 @@ signal: AbortSignal.timeout(10000), // 10 second timeout
 ## 🤝 Contributing
 
 This is an MVP. Key areas for contribution:
+
 - Performance optimization
 - Additional monitoring types (TCP, DNS, etc.)
 - Better error handling

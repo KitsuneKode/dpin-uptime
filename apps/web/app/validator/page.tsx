@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { API_BASE_URL } from '@/utils/config'
 import { formatDistanceToNow } from 'date-fns'
 import { useWallet } from '@solana/wallet-adapter-react'
@@ -24,13 +24,21 @@ export default function ValidatorDashboard() {
   const queryClient = useQueryClient()
   const [withdrawAmount, setWithdrawAmount] = useState('')
   const [withdrawWallet, setWithdrawWallet] = useState('')
+  const [mounted, setMounted] = useState(false)
+  const hasAutoFilledWallet = useRef(false)
 
-  // Auto-fill withdraw wallet with connected wallet
+  // Fix SSR issue - only render wallet components after mount
   useEffect(() => {
-    if (publicKey && !withdrawWallet) {
+    setMounted(true)
+  }, [])
+
+  // Auto-fill withdraw wallet with connected wallet (once)
+  useEffect(() => {
+    if (publicKey && !hasAutoFilledWallet.current) {
       setWithdrawWallet(publicKey.toBase58())
+      hasAutoFilledWallet.current = true
     }
-  }, [publicKey, withdrawWallet])
+  }, [publicKey])
 
   // Fetch validator stats
   const { data: validatorData, isLoading } = useQuery({
@@ -82,6 +90,22 @@ export default function ValidatorDashboard() {
   }
 
   const validator = validatorData?.data
+
+  // Prevent SSR hydration issues
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-6">
+        <Card className="w-full max-w-md">
+          <CardHeader className="text-center">
+            <Skeleton className="mx-auto h-8 w-48" />
+          </CardHeader>
+          <CardContent className="flex justify-center">
+            <Skeleton className="h-10 w-40" />
+          </CardContent>
+        </Card>
+      </div>
+    )
+  }
 
   if (!connected) {
     return (

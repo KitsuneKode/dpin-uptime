@@ -79,20 +79,17 @@ export interface Incident {
   id: string;
   monitorId: string;
   title: string;
-  description?: string;
-  status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
-  severity: 'minor' | 'major' | 'critical';
+  status: 'OPEN' | 'ACKNOWLEDGED' | 'RESOLVED';
+  severity: 'CRITICAL' | 'WARNING' | 'INFO';
   startedAt: string;
   resolvedAt?: string;
-  updates: IncidentUpdate[];
-}
-
-export interface IncidentUpdate {
-  id: string;
-  incidentId: string;
-  message: string;
-  status: 'investigating' | 'identified' | 'monitoring' | 'resolved';
   createdAt: string;
+  updatedAt: string;
+  monitor?: {
+    id: string;
+    url: string;
+    name: string | null;
+  };
 }
 
 export interface DashboardMetrics {

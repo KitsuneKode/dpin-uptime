@@ -17,6 +17,7 @@ import {
   HelpCircle,
   Zap,
   Wallet,
+  Shield,
 } from 'lucide-react'
 
 const navigation = [
@@ -61,6 +62,11 @@ const navigation = [
 ]
 
 const bottomNavigation = [
+  {
+    name: 'Admin',
+    href: '/dashboard/admin/validators',
+    icon: Shield,
+  },
   {
     name: 'Settings',
     href: '/dashboard/settings',

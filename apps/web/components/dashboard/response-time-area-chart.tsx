@@ -6,13 +6,15 @@ import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/compon
 import { Button } from '@dpin-uptime/ui/components/button';
 import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@dpin-uptime/ui/components/select';
-import { 
-  ChartContainer, 
-  ChartTooltip, 
+import {
+  ChartContainer,
+  ChartTooltip,
   ChartTooltipContent,
-  type ChartConfig 
+  type ChartConfig
 } from '@dpin-uptime/ui/components/chart';
-import { useMonitors, useResponseTimeData } from '@/hooks/api';
+import { useMonitors, monitorKeys } from '@/hooks/api';
+import { useQueries } from '@tanstack/react-query';
+import { api } from '@/lib/api';
 import { cn } from '@dpin-uptime/ui/lib/utils';
 import type { TimePeriod, Location } from '@/lib/types';
 
@@ -31,17 +33,23 @@ const locationOptions: { value: Location; label: string }[] = [
 
 const chartColors = [
   '#10b981', // emerald-500
-  '#3b82f6', // blue-500  
+  '#3b82f6', // blue-500
   '#f59e0b', // amber-500
   '#ef4444', // red-500
   '#8b5cf6', // violet-500
+  '#ec4899', // pink-500
+  '#14b8a6', // teal-500
+  '#f97316', // orange-500
+  '#06b6d4', // cyan-500
+  '#84cc16', // lime-500
 ];
 
 export function ResponseTimeAreaChart() {
   const [selectedPeriod, setSelectedPeriod] = React.useState<TimePeriod>('day');
   const [selectedLocation, setSelectedLocation] = React.useState<Location>('us-east');
 
-  const { data: monitorsResponse, isLoading: monitorsLoading } = useMonitors({ limit: 5 });
+  // Fetch up to 10 monitors to show in the chart
+  const { data: monitorsResponse, isLoading: monitorsLoading } = useMonitors({ limit: 10 });
   const monitors = React.useMemo(() => monitorsResponse?.websites || [], [monitorsResponse?.websites]);
 
   // Create chart config based on monitors
@@ -57,20 +65,45 @@ export function ResponseTimeAreaChart() {
     return config;
   }, [monitors]);
 
-  // Get response time data for each monitor
-  const monitor1 = monitors[0];
-  const monitor2 = monitors[1];
-  const monitor3 = monitors[2];
+  // Use useQueries for efficient parallel data fetching
+  const queries = useQueries({
+    queries: monitors.slice(0, 10).map(monitor => ({
+      queryKey: monitorKeys.responseTime(monitor.id, selectedPeriod, selectedLocation),
+      queryFn: async () => {
+        try {
+          const res = await api.getResponseTimeData({ period: selectedPeriod, monitorIds: [monitor.id] });
+          if (!res?.data?.length) {
+            return { data: [], success: true };
+          }
 
-  const query1 = useResponseTimeData(monitor1?.id || '', selectedPeriod, selectedLocation);
-  const query2 = useResponseTimeData(monitor2?.id || '', selectedPeriod, selectedLocation);
-  const query3 = useResponseTimeData(monitor3?.id || '', selectedPeriod, selectedLocation);
+          // Transform backend data to frontend format
+          const transformedData = res.data.map((item: any) => ({
+            timestamp: typeof item.timestamp === 'string' ? item.timestamp : item.timestamp.toISOString(),
+            value: item.avgLatency || item.value || 0,
+            monitorId: item.monitorId,
+            location: selectedLocation || 'unknown',
+            status: (item.status || 'Good') as any,
+          }));
 
-  // Pair monitors with their queries (up to 3)
+          return { data: transformedData, success: true };
+        } catch (error) {
+          console.error('[ResponseTimeAreaChart] Error fetching data for', monitor.id, error);
+          return { data: [], success: false };
+        }
+      },
+      staleTime: 30 * 1000,
+      refetchInterval: 30 * 1000,
+      retry: 1,
+    }))
+  });
+
+  // Pair monitors with their queries
   const series = React.useMemo(() => {
-    const queries = [query1, query2, query3];
-    return monitors.slice(0, 3).map((monitor, index) => ({ monitor, query: queries[index]! }))
-  }, [monitors, query1, query2, query3]);
+    return monitors.slice(0, 10).map((monitor, index) => ({
+      monitor,
+      query: queries[index]!
+    }));
+  }, [monitors, queries]);
 
   // Loading only if we have no data for any series yet
   const isLoading = monitorsLoading || (series.length > 0 && series.every(s => s.query.isLoading && !s.query.data));
@@ -99,9 +132,11 @@ export function ResponseTimeAreaChart() {
       });
     });
 
-    const combined = Array.from(timeMap.values()).sort((a, b) => 
+    const combined = Array.from(timeMap.values()).sort((a, b) =>
       new Date(a.timestamp as string).getTime() - new Date(b.timestamp as string).getTime()
     );
+
+    console.log('[ResponseTimeAreaChart] Showing data for', withData.length, 'monitors');
 
     return { chartData: combined, monitorsWithData: withData };
   }, [series]);
@@ -172,12 +207,13 @@ export function ResponseTimeAreaChart() {
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={chartData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
                 <defs>
-                  {monitorsWithData.slice(0, 3).map((monitor, index) => {
+                  {monitorsWithData.map((monitor, index) => {
                     const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                    const colorIndex = monitors.findIndex(m => m.id === monitor.id);
                     return (
                       <linearGradient key={safeName} id={`gradient-${safeName}`} x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor={chartColors[index]} stopOpacity={0.3}/>
-                        <stop offset="95%" stopColor={chartColors[index]} stopOpacity={0.05}/>
+                        <stop offset="5%" stopColor={chartColors[colorIndex % chartColors.length]} stopOpacity={0.4}/>
+                        <stop offset="95%" stopColor={chartColors[colorIndex % chartColors.length]} stopOpacity={0.05}/>
                       </linearGradient>
                     );
                   })}
@@ -187,7 +223,7 @@ export function ResponseTimeAreaChart() {
                   dataKey="timestamp"
                   tickFormatter={(value) => {
                     const date = new Date(value);
-                    return selectedPeriod === 'day' 
+                    return selectedPeriod === 'day'
                       ? date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
                       : date.toLocaleDateString([], { month: 'short', day: 'numeric' });
                   }}
@@ -197,23 +233,24 @@ export function ResponseTimeAreaChart() {
                   tickFormatter={(value) => `${value}ms`}
                   stroke="#9CA3AF"
                 />
-                <ChartTooltip 
+                <ChartTooltip
                   content={
-                    <ChartTooltipContent 
+                    <ChartTooltipContent
                       labelFormatter={(value) => new Date(value).toLocaleString()}
                       formatter={(value, name) => [`${value}ms`, name]}
                     />
-                  } 
+                  }
                 />
-                {monitorsWithData.slice(0, 3).map((monitor, index) => {
+                {monitorsWithData.map((monitor) => {
                   const safeName = monitor.name.replace(/[^a-zA-Z0-9]/g, '-').toLowerCase();
+                  const colorIndex = monitors.findIndex(m => m.id === monitor.id);
                   return (
                     <Area
                       key={monitor.id}
                       type="monotone"
                       dataKey={safeName}
-                      stroke={chartColors[index]}
-                      strokeWidth={2}
+                      stroke={chartColors[colorIndex % chartColors.length]}
+                      strokeWidth={2.5}
                       fill={`url(#gradient-${safeName})`}
                       connectNulls={true}
                     />
@@ -222,6 +259,24 @@ export function ResponseTimeAreaChart() {
               </AreaChart>
             </ResponsiveContainer>
           </ChartContainer>
+        )}
+
+        {/* Legend showing all monitors with colors */}
+        {monitorsWithData.length > 0 && (
+          <div className="mt-4 flex flex-wrap gap-3">
+            {monitorsWithData.map((monitor) => {
+              const colorIndex = monitors.findIndex(m => m.id === monitor.id);
+              return (
+                <div key={monitor.id} className="flex items-center gap-2">
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ backgroundColor: chartColors[colorIndex % chartColors.length] }}
+                  />
+                  <span className="text-xs text-muted-foreground">{monitor.name}</span>
+                </div>
+              );
+            })}
+          </div>
         )}
       </CardContent>
     </Card>

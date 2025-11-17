@@ -14,39 +14,34 @@ import { StatusIndicator } from '@/components/ui/status-indicator'
 import { AlertTriangle, CheckCircle, Clock, Search } from 'lucide-react'
 
 const severityConfig = {
-  minor: {
-    color:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  INFO: {
+    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
     icon: Clock,
   },
-  major: {
-    color:
-      'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-300',
+  WARNING: {
+    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     icon: AlertTriangle,
   },
-  critical: {
+  CRITICAL: {
     color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
     icon: AlertTriangle,
   },
 } as const
 
 const statusConfig = {
-  investigating: {
-    color: 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300',
-    icon: Search,
-  },
-  identified: {
-    color:
-      'bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-300',
+  OPEN: {
+    color: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300',
+    label: 'Open',
     icon: AlertTriangle,
   },
-  monitoring: {
-    color:
-      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+  ACKNOWLEDGED: {
+    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    label: 'Acknowledged',
     icon: Clock,
   },
-  resolved: {
+  RESOLVED: {
     color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+    label: 'Resolved',
     icon: CheckCircle,
   },
 } as const
@@ -121,7 +116,7 @@ export function RecentIncidents() {
               className="border-border flex items-start space-x-3 border-b pb-4 last:border-b-0 last:pb-0"
             >
               <StatusIndicator
-                status={incident.status === 'resolved' ? 'up' : 'down'}
+                status={incident.status === 'RESOLVED' ? 'up' : 'down'}
                 size="sm"
                 className="mt-1"
               />
@@ -144,14 +139,14 @@ export function RecentIncidents() {
                       className={statusConfig[incident.status].color}
                     >
                       <StatusIcon className="mr-1 h-3 w-3" />
-                      {incident.status}
+                      {statusConfig[incident.status].label}
                     </Badge>
                   </div>
                 </div>
 
-                {incident.description && (
-                  <p className="text-muted-foreground mt-1 line-clamp-2 text-xs">
-                    {incident.description}
+                {incident.monitor && (
+                  <p className="text-muted-foreground mt-1 text-xs">
+                    {incident.monitor.name || incident.monitor.url}
                   </p>
                 )}
 

@@ -58,7 +58,9 @@ export function UptimeStatusBar({ ticks, days = 90, showLabels = true }: UptimeS
       // Count status changes (potential incidents)
       let incidents = 0;
       for (let j = 1; j < dayTicks.length; j++) {
-        if (dayTicks[j].status === 'Bad' && dayTicks[j - 1]?.status === 'Good') {
+        const currentTick = dayTicks[j];
+        const previousTick = dayTicks[j - 1];
+        if (currentTick && previousTick && currentTick.status === 'Bad' && previousTick.status === 'Good') {
           incidents++;
         }
       }

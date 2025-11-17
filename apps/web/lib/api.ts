@@ -211,6 +211,43 @@ class ApiClient {
       method: 'DELETE',
     })
   }
+
+  // Admin - Validators
+  async registerValidator(data: { publicKey: string; location: string; ip: string }): Promise<ApiResponse<any>> {
+    return this.request('/api/v1/admin/validators', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    })
+  }
+
+  async getValidators(status?: string): Promise<{ data: any[] }> {
+    const query = status && status !== 'all' ? `?status=${status}` : ''
+    return this.request(`/api/v1/admin/validators${query}`)
+  }
+
+  async approveValidator(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/api/v1/admin/validators/${id}/approve`, {
+      method: 'PATCH',
+    })
+  }
+
+  async rejectValidator(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/api/v1/admin/validators/${id}/reject`, {
+      method: 'PATCH',
+    })
+  }
+
+  async suspendValidator(id: string): Promise<ApiResponse<any>> {
+    return this.request(`/api/v1/admin/validators/${id}/suspend`, {
+      method: 'PATCH',
+    })
+  }
+
+  async deleteValidator(id: string): Promise<ApiResponse<void>> {
+    return this.request(`/api/v1/admin/validators/${id}`, {
+      method: 'DELETE',
+    })
+  }
 }
 
 // Import mock API for development

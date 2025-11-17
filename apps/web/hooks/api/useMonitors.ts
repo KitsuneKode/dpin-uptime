@@ -65,18 +65,30 @@ export const useResponseTimeData = (
       try {
         const res = await api.getResponseTimeData({ period, monitorIds: [monitorId] });
         if (!res?.data?.length) {
-          const data = generateMockResponseTimeData(monitorId, period, location || 'us-east');
-          return { data, success: true, message: 'fallback-mock' } as ApiResponse<ResponseTimeData[]>;
+          console.log('[useResponseTimeData] No data returned from API');
+          return { data: [], success: true } as ApiResponse<ResponseTimeData[]>;
         }
-        return res;
-      } catch {
-        const data = generateMockResponseTimeData(monitorId, period, location || 'us-east');
-        return { data, success: true, message: 'fallback-mock' } as ApiResponse<ResponseTimeData[]>;
+
+        // Transform backend data to frontend format
+        const transformedData: ResponseTimeData[] = res.data.map((item: any) => ({
+          timestamp: typeof item.timestamp === 'string' ? item.timestamp : item.timestamp.toISOString(),
+          value: item.avgLatency || item.value || 0,
+          monitorId: item.monitorId,
+          location: location || 'unknown',
+          status: (item.status || 'Good') as any,
+        }));
+
+        console.log('[useResponseTimeData] Transformed data:', transformedData.length, 'points');
+        return { data: transformedData, success: true } as ApiResponse<ResponseTimeData[]>;
+      } catch (error) {
+        console.error('[useResponseTimeData] Error fetching data:', error);
+        return { data: [], success: false } as ApiResponse<ResponseTimeData[]>;
       }
     },
     enabled: !!monitorId && !!period && monitorId.trim() !== '',
-    staleTime: 60 * 1000, // 1 minute
-    retry: 0,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds
+    retry: 1,
   });
 };
 
@@ -157,12 +169,23 @@ export const usePauseMonitor = (): UseMutationResult<ApiResponse<Monitor>, Error
 // Resume monitor mutation
 export const useResumeMonitor = (): UseMutationResult<ApiResponse<Monitor>, Error, string> => {
   const queryClient = useQueryClient();
-  
+
   return useMutation({
     mutationFn: (id: string) => api.resumeMonitor(id),
     onSuccess: (response, id) => {
       queryClient.invalidateQueries({ queryKey: monitorKeys.lists() });
       queryClient.invalidateQueries({ queryKey: monitorKeys.detail(id) });
     },
+  });
+};
+
+// Monitor ticks query
+export const useMonitorTicks = (id: string): UseQueryResult<any> => {
+  return useQuery({
+    queryKey: [...monitorKeys.detail(id), 'ticks'],
+    queryFn: () => api.getMonitorTicks(id),
+    enabled: !!id,
+    staleTime: 30 * 1000, // 30 seconds
+    refetchInterval: 30 * 1000, // Refetch every 30 seconds to get new ticks
   });
 };

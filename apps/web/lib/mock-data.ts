@@ -177,105 +177,45 @@ export const mockIncidents: Incident[] = [
     id: '1',
     monitorId: '8',
     title: 'Payment Processor Brief Slowdown',
-    description: 'Payment processing experienced temporary increased response times.',
-    status: 'resolved',
-    severity: 'minor',
+    status: 'RESOLVED',
+    severity: 'INFO',
     startedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
-    resolvedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
-    updates: [
-      {
-        id: '1-1',
-        incidentId: '1',
-        message: 'Monitoring increased response times on payment processor.',
-        status: 'investigating',
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: '1-2',
-        incidentId: '1',
-        message: 'Response times have returned to normal. Issue resolved.',
-        status: 'resolved',
-        createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
+    resolvedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 hours ago
   },
   {
     id: '2',
     monitorId: '3',
     title: 'Database Connection Pool Exhaustion',
-    description: 'Database cluster experienced connection pool exhaustion during peak traffic.',
-    status: 'resolved',
-    severity: 'major',
+    status: 'RESOLVED',
+    severity: 'WARNING',
     startedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    resolvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(), // 45 mins later
-    updates: [
-      {
-        id: '2-1',
-        incidentId: '2',
-        message: 'Database connection issues detected during peak traffic.',
-        status: 'investigating',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: '2-2',
-        incidentId: '2',
-        message: 'Increased connection pool size and optimized queries. Issue resolved.',
-        status: 'resolved',
-        createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
-      },
-    ],
+    resolvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 45 mins later
   },
   {
     id: '3',
     monitorId: '1',
     title: 'Brief Website Slowdown',
-    description: 'Website experienced temporary slowdown due to high traffic.',
-    status: 'resolved',
-    severity: 'minor',
+    status: 'RESOLVED',
+    severity: 'INFO',
     startedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
-    resolvedAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(), // 90 mins ago
-    updates: [
-      {
-        id: '3-1',
-        incidentId: '3',
-        message: 'Website experiencing slower response times.',
-        status: 'investigating',
-        createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: '3-2',
-        incidentId: '3',
-        message: 'Issue resolved. Website performance back to normal.',
-        status: 'resolved',
-        createdAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
-      },
-    ],
+    resolvedAt: new Date(Date.now() - 90 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 90 mins ago
   },
   {
     id: '4',
     monitorId: '2',
     title: 'API Rate Limiting Issues',
-    description: 'Some API requests were being rate limited incorrectly.',
-    status: 'resolved',
-    severity: 'minor',
+    status: 'RESOLVED',
+    severity: 'INFO',
     startedAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(), // 6 hours ago
-    resolvedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(), // 4 hours ago
-    updates: [
-      {
-        id: '4-1',
-        incidentId: '4',
-        message: 'Investigating reports of API rate limiting issues.',
-        status: 'investigating',
-        createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000).toISOString(),
-      },
-      {
-        id: '4-2',
-        incidentId: '4',
-        message: 'Rate limiting configuration updated. Issue resolved.',
-        status: 'resolved',
-        createdAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
-      },
-    ],
+    resolvedAt: new Date(Date.now() - 4 * 60 * 60 * 1000).toISOString(),
+    createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+    updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 4 hours ago
   },
 ]
 

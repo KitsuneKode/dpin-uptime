@@ -78,17 +78,21 @@ model Verification {
 }
 
 model Monitor {
-  id           String        @id @default(cuid())
-  url          String
-  name         String?
-  userId       String
-  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  websiteTicks WebsiteTick[]
-  incidents    Incident[]
-  archived     Boolean       @default(false)
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
-  statusPages  StatusPageMonitor[]
+  id                   String        @id @default(cuid())
+  url                  String
+  name                 String?
+  userId               String
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  websiteTicks         WebsiteTick[]
+  incidents            Incident[]
+  archived             Boolean       @default(false)
+  interval             Int           @default(30000) // Interval in milliseconds (default 30s)
+  timeout              Int           @default(10000) // Timeout in milliseconds (default 10s)
+  expectedStatusCodes  Int[]         @default([200, 201, 202, 203, 204])
+  locations            String[]      @default([])
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+  statusPages          StatusPageMonitor[]
 }
 
 model StatusPage {
@@ -120,6 +124,9 @@ model Validator {
   publicKey       String              @unique
   location        String
   ip              String
+  status          ValidatorStatus     @default(PENDING)
+  approvedAt      DateTime?
+  approvedBy      String?
   websiteTicks    WebsiteTick[]
   earnings        ValidatorEarning[]
   withdrawals     ValidatorWithdrawal[]
@@ -128,6 +135,13 @@ model Validator {
   pendingBalance  Float               @default(0)
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @default(now()) @updatedAt
+}
+
+enum ValidatorStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  SUSPENDED
 }
 
 model WebsiteTick {

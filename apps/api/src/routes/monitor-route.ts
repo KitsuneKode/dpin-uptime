@@ -28,6 +28,17 @@ function transformMonitor(dbMonitor: any) {
     status = 'down'
   }
 
+  // Convert interval from milliseconds to human-readable format
+  const intervalMs = dbMonitor.interval || 30000
+  let intervalStr = '30s'
+  if (intervalMs < 60000) {
+    intervalStr = `${intervalMs / 1000}s`
+  } else if (intervalMs < 3600000) {
+    intervalStr = `${intervalMs / 60000}m`
+  } else {
+    intervalStr = `${intervalMs / 3600000}h`
+  }
+
   return {
     id: dbMonitor.id,
     name: dbMonitor.name || new URL(dbMonitor.url).hostname,
@@ -39,7 +50,11 @@ function transformMonitor(dbMonitor: any) {
       current: status === 'up' ? 'Operational' : status === 'degraded' ? 'Degraded' : 'Down',
       percentage: uptimePercentage,
     },
-    interval: '5m', // Default interval, can be made configurable
+    interval: intervalStr,
+    intervalMs: intervalMs,
+    timeout: dbMonitor.timeout || 10000,
+    expectedStatusCodes: dbMonitor.expectedStatusCodes || [200, 201, 202, 203, 204],
+    locations: dbMonitor.locations || [],
     incidents: 0, // TODO: Calculate from incidents table
     createdAt: dbMonitor.createdAt.toISOString(),
     updatedAt: dbMonitor.updatedAt.toISOString(),
@@ -54,7 +69,7 @@ router.post('/monitor', async (req, res) => {
       data: {
         url,
         name,
-        userId: req.user.id,
+        userId: req.user?.id!,
       },
       include: {
         websiteTicks: {
@@ -195,17 +210,21 @@ router.patch('/monitor', async (req, res) => {
       return
     }
 
+    // Build update data object
+    const updateData: any = {}
+    if (name !== undefined) updateData.name = name
+    if (url !== undefined) updateData.url = url
+    if (interval !== undefined) updateData.interval = parseInt(interval)
+    if (timeout !== undefined) updateData.timeout = parseInt(timeout)
+    if (expectedStatusCodes !== undefined) updateData.expectedStatusCodes = expectedStatusCodes
+    if (locations !== undefined) updateData.locations = locations
+
     // Update the monitor
     const monitor = await prisma.monitor.update({
       where: {
         id,
       },
-      data: {
-        name: name !== undefined ? name : existingMonitor.name,
-        url: url !== undefined ? url : existingMonitor.url,
-        // Note: interval, timeout, expectedStatusCodes, locations would need to be stored
-        // if you add those fields to your schema
-      },
+      data: updateData,
       include: {
         websiteTicks: {
           orderBy: {
@@ -256,7 +275,7 @@ router.get('/monitor/:id/ticks', async (req, res) => {
 
 router.patch('/monitor/:id/pause', async (req, res) => {
   try {
-    const { id} = req.params
+    const { id } = req.params
 
     // Archive the monitor (pause it)
     const monitor = await prisma.monitor.update({

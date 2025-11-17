@@ -37,13 +37,13 @@ class MockApiClient {
     return wrapApiResponse(mockDashboardMetrics)
   }
 
-  // Monitors
+  // Monitors (matching ApiClient signature)
   async getMonitors(params?: {
     page?: number
     limit?: number
     search?: string
     status?: string
-  }): Promise<PaginatedResponse<Monitor>> {
+  }): Promise<{ websites: Monitor[] }> {
     await delay(400)
 
     let filteredMonitors = [...mockMonitors]
@@ -65,11 +65,7 @@ class MockApiClient {
       )
     }
 
-    return wrapPaginatedResponse(
-      filteredMonitors,
-      params?.page || 1,
-      params?.limit || 10,
-    )
+    return { websites: filteredMonitors.slice(0, params?.limit || 10) }
   }
 
   async getMonitor(id: string): Promise<ApiResponse<Monitor>> {
@@ -81,7 +77,7 @@ class MockApiClient {
     return wrapApiResponse(monitor)
   }
 
-  async createMonitor(data: CreateMonitorData): Promise<ApiResponse<Monitor>> {
+  async createMonitor(data: CreateMonitorData): Promise<{ success: boolean; message: string } & Partial<Monitor>> {
     await delay(600)
 
     const newMonitor: Monitor = {
@@ -102,7 +98,7 @@ class MockApiClient {
     }
 
     mockMonitors.push(newMonitor)
-    return wrapApiResponse(newMonitor)
+    return { success: true, message: 'Monitor created successfully', ...newMonitor }
   }
 
   async updateMonitor(data: UpdateMonitorData): Promise<ApiResponse<Monitor>> {
@@ -113,9 +109,14 @@ class MockApiClient {
       throw new Error(`Monitor with id ${data.id} not found`)
     }
 
-    const updatedMonitor = {
-      ...mockMonitors[index],
-      ...data,
+    const existingMonitor = mockMonitors[index]!
+    const updates = Object.fromEntries(
+      Object.entries(data).filter(([_, value]) => value !== undefined)
+    )
+
+    const updatedMonitor: Monitor = {
+      ...existingMonitor,
+      ...updates,
       updatedAt: new Date().toISOString(),
     }
 
@@ -123,7 +124,7 @@ class MockApiClient {
     return wrapApiResponse(updatedMonitor)
   }
 
-  async deleteMonitor(id: string): Promise<ApiResponse<void>> {
+  async deleteMonitor(id: string): Promise<{ success: boolean; message: string }> {
     await delay(400)
 
     const index = mockMonitors.findIndex((m) => m.id === id)
@@ -132,7 +133,7 @@ class MockApiClient {
     }
 
     mockMonitors.splice(index, 1)
-    return wrapApiResponse(undefined as void)
+    return { success: true, message: 'Monitor deleted successfully' }
   }
 
   async pauseMonitor(id: string): Promise<ApiResponse<Monitor>> {
@@ -163,39 +164,35 @@ class MockApiClient {
     return wrapApiResponse(monitor)
   }
 
-  // Response Time Data
+  // Response Time Data (matching ApiClient signature)
   async getResponseTimeData(
-    monitorId: string,
     params: {
-      period: TimePeriod
-      location?: Location
-    },
+      period?: string
+      monitorIds?: string[]
+    } = {},
   ): Promise<ApiResponse<ResponseTimeData[]>> {
     await delay(600)
 
+    const monitorId = params.monitorIds?.[0] || 'mock-monitor'
+    const period = (params.period as TimePeriod) || 'day'
+
     const data = generateMockResponseTimeData(
       monitorId,
-      params.period,
-      params.location || 'us-east',
+      period,
+      'us-east',
     )
 
     return wrapApiResponse(data)
   }
 
-  // Uptime Stats
-  async getUptimeStats(
-    monitorId: string,
-    period: TimePeriod,
-  ): Promise<ApiResponse<UptimeStats>> {
+  // Uptime Stats (matching ApiClient signature)
+  async getUptimeStats(): Promise<ApiResponse<UptimeStats[]>> {
     await delay(400)
 
-    const periodMap: Record<TimePeriod, 'today' | 'week' | 'month'> = {
-      day: 'today',
-      week: 'week',
-      month: 'month',
-    }
-
-    const stats = generateMockUptimeStats(monitorId, periodMap[period])
+    const stats = [
+      generateMockUptimeStats('mock-monitor-1', 'today'),
+      generateMockUptimeStats('mock-monitor-2', 'today'),
+    ]
     return wrapApiResponse(stats)
   }
 
@@ -325,6 +322,42 @@ class MockApiClient {
 
     mockStatusPages.splice(index, 1)
     return wrapApiResponse(undefined as void)
+  }
+
+  // Admin - Validators (mock implementations)
+  async registerValidator(data: { publicKey: string; location: string; ip: string }): Promise<ApiResponse<any>> {
+    await delay(400)
+    return wrapApiResponse({ id: 'mock-validator-id', ...data, status: 'PENDING' })
+  }
+
+  async getValidators(status?: string): Promise<{ data: any[] }> {
+    await delay(300)
+    return { data: [] }
+  }
+
+  async approveValidator(id: string): Promise<ApiResponse<any>> {
+    await delay(400)
+    return wrapApiResponse({ id, status: 'APPROVED' })
+  }
+
+  async rejectValidator(id: string): Promise<ApiResponse<any>> {
+    await delay(400)
+    return wrapApiResponse({ id, status: 'REJECTED' })
+  }
+
+  async suspendValidator(id: string): Promise<ApiResponse<any>> {
+    await delay(400)
+    return wrapApiResponse({ id, status: 'SUSPENDED' })
+  }
+
+  async deleteValidator(id: string): Promise<ApiResponse<void>> {
+    await delay(400)
+    return wrapApiResponse(undefined as void)
+  }
+
+  async getMonitorTicks(id: string): Promise<ApiResponse<any[]>> {
+    await delay(300)
+    return wrapApiResponse([])
   }
 }
 

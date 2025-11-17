@@ -1,6 +1,7 @@
 import { Navbar } from '@/components/layout/navbar'
 import { Footer } from '@/components/layout/footer'
 import { Hero } from '@/components/hero/hero'
+import { QuickLinks } from '@/components/sections/quick-links'
 import { Metrics } from '@/components/sections/metrics'
 import { DashboardVisual } from '@/components/sections/dashboard-visual'
 import { Features } from '@/components/sections/features'
@@ -15,6 +16,7 @@ export default function MarketingPage() {
       <Navbar />
       <main>
         <Hero />
+        <QuickLinks />
         <Metrics />
         <DashboardVisual />
         <Features />

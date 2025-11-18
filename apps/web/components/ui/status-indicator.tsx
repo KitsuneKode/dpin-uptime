@@ -1,11 +1,11 @@
-import { cn } from '@dpin-uptime/ui/lib/utils';
-import type { MonitorStatus } from '@/lib/types';
+import { cn } from '@dpin-uptime/ui/lib/utils'
+import type { MonitorStatus } from '@/lib/types'
 
 interface StatusIndicatorProps {
-  status: MonitorStatus;
-  size?: 'sm' | 'md' | 'lg';
-  showText?: boolean;
-  className?: string;
+  status: MonitorStatus
+  size?: 'sm' | 'md' | 'lg'
+  showText?: boolean
+  className?: string
 }
 
 const statusConfig = {
@@ -29,22 +29,22 @@ const statusConfig = {
     text: 'Paused',
     textColor: 'text-gray-600',
   },
-} as const;
+} as const
 
 const sizeConfig = {
   sm: 'h-2 w-2',
   md: 'h-3 w-3',
   lg: 'h-4 w-4',
-} as const;
+} as const
 
-export function StatusIndicator({ 
-  status, 
-  size = 'md', 
-  showText = false, 
-  className 
+export function StatusIndicator({
+  status,
+  size = 'md',
+  showText = false,
+  className,
 }: StatusIndicatorProps) {
-  const config = statusConfig[status];
-  const sizeClass = sizeConfig[size];
+  const config = statusConfig[status]
+  const sizeClass = sizeConfig[size]
 
   return (
     <div className={cn('flex items-center gap-2', className)}>
@@ -53,7 +53,7 @@ export function StatusIndicator({
           'rounded-full',
           config.color,
           sizeClass,
-          status === 'up' && 'animate-pulse'
+          status === 'up' && 'animate-pulse',
         )}
         aria-label={`Status: ${config.text}`}
       />
@@ -63,5 +63,5 @@ export function StatusIndicator({
         </span>
       )}
     </div>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import { prisma } from '@dpin-uptime/store'
 import type { WebsiteTick, WebsiteStatus } from '@dpin-uptime/store/generated'
+import { prisma } from '@dpin-uptime/store'
 
 interface UptimeStats {
   monitorId: string
@@ -43,7 +43,7 @@ export function calculateUptime(ticks: WebsiteTick[]): number {
  */
 export async function getMonitorUptimeStats(
   monitorId: string,
-  userId: string
+  userId: string,
 ): Promise<UptimeStats | null> {
   const monitor = await prisma.monitor.findFirst({
     where: {
@@ -94,9 +94,7 @@ export async function getMonitorUptimeStats(
 /**
  * Get dashboard metrics for a user
  */
-export async function getDashboardMetrics(
-  userId: string
-): Promise<DashboardMetrics> {
+export async function getDashboardMetrics(userId: string): Promise<DashboardMetrics> {
   const monitors = await prisma.monitor.findMany({
     where: {
       userId,
@@ -142,10 +140,7 @@ export async function getDashboardMetrics(
   const avgResponseTime = totalTicks > 0 ? totalLatency / totalTicks : 0
 
   // Count open incidents
-  const openIncidents = monitors.reduce(
-    (sum, monitor) => sum + monitor.incidents.length,
-    0
-  )
+  const openIncidents = monitors.reduce((sum, monitor) => sum + monitor.incidents.length, 0)
 
   return {
     totalMonitors,
@@ -162,7 +157,7 @@ export async function getDashboardMetrics(
 export async function getResponseTimeData(
   userId: string,
   monitorIds?: string[],
-  period: '24h' | '7d' | '30d' = '24h'
+  period: '24h' | '7d' | '30d' = '24h',
 ): Promise<ResponseTimeData[]> {
   const periodMap = {
     '24h': 24 * 60 * 60 * 1000,
@@ -223,8 +218,7 @@ export async function getResponseTimeData(
   hourlyData.forEach((monitorMap, hourKey) => {
     monitorMap.forEach((latencies, monitorId) => {
       const timestamp = new Date(parseInt(hourKey))
-      const avgLatency =
-        latencies.reduce((sum, l) => sum + l, 0) / latencies.length
+      const avgLatency = latencies.reduce((sum, l) => sum + l, 0) / latencies.length
       const minLatency = Math.min(...latencies)
       const maxLatency = Math.max(...latencies)
 
@@ -244,9 +238,7 @@ export async function getResponseTimeData(
 /**
  * Get all uptime stats for user's monitors
  */
-export async function getAllMonitorUptimeStats(
-  userId: string
-): Promise<UptimeStats[]> {
+export async function getAllMonitorUptimeStats(userId: string): Promise<UptimeStats[]> {
   const monitors = await prisma.monitor.findMany({
     where: {
       userId,
@@ -255,7 +247,7 @@ export async function getAllMonitorUptimeStats(
   })
 
   const stats = await Promise.all(
-    monitors.map((monitor) => getMonitorUptimeStats(monitor.id, userId))
+    monitors.map((monitor) => getMonitorUptimeStats(monitor.id, userId)),
   )
 
   return stats.filter((s): s is UptimeStats => s !== null)

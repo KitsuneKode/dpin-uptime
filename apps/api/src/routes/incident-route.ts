@@ -1,6 +1,6 @@
-import { Router } from 'express'
 import { authMiddleware } from '@/middlewares/auth-middleware'
 import { prisma } from '@dpin-uptime/store'
+import { Router } from 'express'
 
 const router = Router()
 

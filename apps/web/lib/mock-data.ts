@@ -1,3 +1,4 @@
+import { WebsiteStatus } from './types'
 import type {
   Monitor,
   DashboardMetrics,
@@ -8,7 +9,6 @@ import type {
   ApiResponse,
   PaginatedResponse,
 } from './types'
-import { WebsiteStatus } from './types'
 
 // Helper function to generate random data (for future use)
 // const randomBetween = (min: number, max: number) =>
@@ -20,12 +20,12 @@ import { WebsiteStatus } from './types'
 const generateTimestamps = (count: number, intervalMinutes: number = 5) => {
   const now = new Date()
   const timestamps: string[] = []
-  
+
   for (let i = count - 1; i >= 0; i--) {
     const time = new Date(now.getTime() - i * intervalMinutes * 60 * 1000)
     timestamps.push(time.toISOString())
   }
-  
+
   return timestamps
 }
 
@@ -40,7 +40,7 @@ export const mockMonitors: Monitor[] = [
     responseTime: 145,
     uptime: {
       current: '5 hours 3 minutes 46 seconds',
-      percentage: 100.0000,
+      percentage: 100.0,
     },
     interval: '3m',
     incidents: 0,
@@ -191,7 +191,9 @@ export const mockIncidents: Incident[] = [
     status: 'RESOLVED',
     severity: 'WARNING',
     startedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
-    resolvedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000).toISOString(),
+    resolvedAt: new Date(
+      Date.now() - 2 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000,
+    ).toISOString(),
     createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     updatedAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 45 mins later
   },
@@ -223,9 +225,9 @@ export const mockIncidents: Incident[] = [
 export const generateMockResponseTimeData = (
   monitorId: string,
   period: 'day' | 'week' | 'month' = 'day',
-  location: string = 'us-east'
+  location: string = 'us-east',
 ): ResponseTimeData[] => {
-  const monitor = mockMonitors.find(m => m.id === monitorId)
+  const monitor = mockMonitors.find((m) => m.id === monitorId)
   if (!monitor) return []
 
   const baseResponseTime = monitor.responseTime
@@ -233,32 +235,39 @@ export const generateMockResponseTimeData = (
   const intervalMinutes = period === 'day' ? 5 : 60
 
   const timestamps = generateTimestamps(dataPoints, intervalMinutes)
-  
+
   return timestamps.map((timestamp, index) => {
     // Create more realistic patterns
     const timeOfDay = new Date(timestamp).getHours()
     const dayOfWeek = new Date(timestamp).getDay()
-    
+
     // Base variation with time-of-day patterns
     let variation = 0
-    
+
     // Higher response times during peak hours (9-17)
     if (timeOfDay >= 9 && timeOfDay <= 17) {
-      variation += 30 + Math.sin((timeOfDay - 9) / 8 * Math.PI) * 20
+      variation += 30 + Math.sin(((timeOfDay - 9) / 8) * Math.PI) * 20
     }
-    
+
     // Weekend traffic patterns
     if (dayOfWeek === 0 || dayOfWeek === 6) {
       variation -= 15
     }
-    
+
     // Add some random spikes and normal variation
     const randomSpike = Math.random() < 0.02 ? Math.random() * 200 : 0 // 2% chance of spike
     const normalVariation = (Math.random() - 0.5) * 30
     const trendVariation = Math.sin(index * 0.05) * 15
-    
-    let value = Math.max(10, baseResponseTime + variation + randomSpike + normalVariation + trendVariation)
-    
+
+    let value = Math.max(
+      10,
+      baseResponseTime +
+        variation +
+        randomSpike +
+        normalVariation +
+        trendVariation,
+    )
+
     // Simulate outages and degraded performance
     if (monitor.status === 'down' && index > dataPoints - 10) {
       value = 0 // Recent outage
@@ -282,7 +291,8 @@ export const mockStatusPages: StatusPage[] = [
     id: '1',
     companyName: 'Example Corp',
     subdomain: 'status',
-    logoUrl: 'https://via.placeholder.com/200x60/4F46E5/FFFFFF?text=Example+Corp',
+    logoUrl:
+      'https://via.placeholder.com/200x60/4F46E5/FFFFFF?text=Example+Corp',
     theme: 'light',
     monitors: ['1', '2', '3', '4'],
     createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
@@ -293,9 +303,9 @@ export const mockStatusPages: StatusPage[] = [
 // Mock Uptime Stats
 export const generateMockUptimeStats = (
   monitorId: string,
-  period: 'today' | 'week' | 'month' = 'today'
+  period: 'today' | 'week' | 'month' = 'today',
 ): UptimeStats => {
-  const monitor = mockMonitors.find(m => m.id === monitorId)
+  const monitor = mockMonitors.find((m) => m.id === monitorId)
   if (!monitor) {
     return {
       period,
@@ -308,15 +318,32 @@ export const generateMockUptimeStats = (
   }
 
   const baseUptime = monitor.uptime.percentage
-  const incidents = mockIncidents.filter(i => i.monitorId === monitorId).length
+  const incidents = mockIncidents.filter(
+    (i) => i.monitorId === monitorId,
+  ).length
 
   return {
     period,
     availability: baseUptime,
-    downtime: period === 'today' ? '12 minutes' : period === 'week' ? '2 hours 15 minutes' : '8 hours 42 minutes',
+    downtime:
+      period === 'today'
+        ? '12 minutes'
+        : period === 'week'
+          ? '2 hours 15 minutes'
+          : '8 hours 42 minutes',
     incidents,
-    longestIncident: period === 'today' ? '8 minutes' : period === 'week' ? '45 minutes' : '2 hours 15 minutes',
-    avgIncident: period === 'today' ? '6 minutes' : period === 'week' ? '22 minutes' : '1 hour 5 minutes',
+    longestIncident:
+      period === 'today'
+        ? '8 minutes'
+        : period === 'week'
+          ? '45 minutes'
+          : '2 hours 15 minutes',
+    avgIncident:
+      period === 'today'
+        ? '6 minutes'
+        : period === 'week'
+          ? '22 minutes'
+          : '1 hour 5 minutes',
   }
 }
 
@@ -330,7 +357,7 @@ export const wrapApiResponse = <T>(data: T): ApiResponse<T> => ({
 export const wrapPaginatedResponse = <T>(
   data: T[],
   page: number = 1,
-  limit: number = 10
+  limit: number = 10,
 ): PaginatedResponse<T> => ({
   data: data.slice((page - 1) * limit, page * limit),
   pagination: {

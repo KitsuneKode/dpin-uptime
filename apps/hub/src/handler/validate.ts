@@ -23,16 +23,10 @@ export const validateHandler = async ({
 
     // Verify the signed message
     const messageToVerify = `${callbackId}:${status}:${latency}:${websiteId}`
-    const verified = verifyMessage(
-      messageToVerify,
-      validator.publicKey,
-      signedMessage
-    )
+    const verified = verifyMessage(messageToVerify, validator.publicKey, signedMessage)
 
     if (!verified) {
-      console.error(
-        `Invalid signature from validator ${validatorId} for callback ${callbackId}`
-      )
+      console.error(`Invalid signature from validator ${validatorId} for callback ${callbackId}`)
       return
     }
 
@@ -46,9 +40,7 @@ export const validateHandler = async ({
       },
     })
 
-    console.log(
-      `✓ Saved tick for website ${websiteId}: ${status} (${latency}ms)`
-    )
+    console.log(`✓ Saved tick for website ${websiteId}: ${status} (${latency}ms)`)
 
     // Track earnings for the validator (0.0001 SOL per validation)
     const earningAmount = 0.0001
@@ -185,9 +177,7 @@ async function autoResolveIncidents(websiteId: string) {
       },
     })
 
-    console.log(
-      `✓ Auto-resolved ${openIncidents.length} incident(s) for monitor ${websiteId}`
-    )
+    console.log(`✓ Auto-resolved ${openIncidents.length} incident(s) for monitor ${websiteId}`)
   } catch (error) {
     console.error('Error auto-resolving incidents:', error)
   }

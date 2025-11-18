@@ -1,10 +1,27 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
-import { Button } from '@dpin-uptime/ui/components/button';
-import { Badge } from '@dpin-uptime/ui/components/badge';
-import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
+import * as React from 'react'
+import { toast } from 'sonner'
+import { api } from '@/lib/api'
+import { formatDistanceToNow } from 'date-fns'
+import { Badge } from '@dpin-uptime/ui/components/badge'
+import { Button } from '@dpin-uptime/ui/components/button'
+import { Skeleton } from '@dpin-uptime/ui/components/skeleton'
+import { CheckCircle, XCircle, Ban, Trash2, RefreshCw } from 'lucide-react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@dpin-uptime/ui/components/card'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@dpin-uptime/ui/components/select'
 import {
   Table,
   TableBody,
@@ -12,43 +29,32 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@dpin-uptime/ui/components/table';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@dpin-uptime/ui/components/select';
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { formatDistanceToNow } from 'date-fns';
-import { CheckCircle, XCircle, Ban, Trash2, RefreshCw } from 'lucide-react';
-import { toast } from 'sonner';
+} from '@dpin-uptime/ui/components/table'
 
-type ValidatorStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED';
+type ValidatorStatus = 'PENDING' | 'APPROVED' | 'REJECTED' | 'SUSPENDED'
 
 interface Validator {
-  id: string;
-  publicKey: string;
-  location: string;
-  ip: string;
-  status: ValidatorStatus;
-  approvedAt: string | null;
-  approvedBy: string | null;
-  totalEarned: number;
-  totalWithdrawn: number;
-  pendingBalance: number;
-  totalValidations: number;
-  totalEarnings: number;
-  totalWithdrawals: number;
-  createdAt: string;
-  updatedAt: string;
+  id: string
+  publicKey: string
+  location: string
+  ip: string
+  status: ValidatorStatus
+  approvedAt: string | null
+  approvedBy: string | null
+  totalEarned: number
+  totalWithdrawn: number
+  pendingBalance: number
+  totalValidations: number
+  totalEarnings: number
+  totalWithdrawals: number
+  createdAt: string
+  updatedAt: string
 }
 
 const statusConfig = {
   PENDING: {
-    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     label: 'Pending',
   },
   APPROVED: {
@@ -63,81 +69,85 @@ const statusConfig = {
     color: 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300',
     label: 'Suspended',
   },
-};
+}
 
 export default function AdminValidatorsPage() {
-  const [statusFilter, setStatusFilter] = React.useState<'all' | ValidatorStatus>('all');
-  const queryClient = useQueryClient();
+  const [statusFilter, setStatusFilter] = React.useState<
+    'all' | ValidatorStatus
+  >('all')
+  const queryClient = useQueryClient()
 
   const { data: validatorsResponse, isLoading } = useQuery({
     queryKey: ['admin', 'validators', statusFilter],
     queryFn: async () => {
-      return await api.getValidators(statusFilter !== 'all' ? statusFilter : undefined);
+      return await api.getValidators(
+        statusFilter !== 'all' ? statusFilter : undefined,
+      )
     },
     staleTime: 30 * 1000,
-  });
+  })
 
   const approveMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await api.approveValidator(id);
+      return await api.approveValidator(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] });
-      toast.success('Validator approved successfully');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] })
+      toast.success('Validator approved successfully')
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to approve validator');
+      toast.error(error.message || 'Failed to approve validator')
     },
-  });
+  })
 
   const rejectMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await api.rejectValidator(id);
+      return await api.rejectValidator(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] });
-      toast.success('Validator rejected');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] })
+      toast.success('Validator rejected')
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to reject validator');
+      toast.error(error.message || 'Failed to reject validator')
     },
-  });
+  })
 
   const suspendMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await api.suspendValidator(id);
+      return await api.suspendValidator(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] });
-      toast.success('Validator suspended');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] })
+      toast.success('Validator suspended')
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to suspend validator');
+      toast.error(error.message || 'Failed to suspend validator')
     },
-  });
+  })
 
   const deleteMutation = useMutation({
     mutationFn: async (id: string) => {
-      return await api.deleteValidator(id);
+      return await api.deleteValidator(id)
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] });
-      toast.success('Validator deleted');
+      queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] })
+      toast.success('Validator deleted')
     },
     onError: (error: any) => {
-      toast.error(error.message || 'Failed to delete validator');
+      toast.error(error.message || 'Failed to delete validator')
     },
-  });
+  })
 
-  const validators = validatorsResponse?.data || [];
+  const validators = validatorsResponse?.data || []
 
   const stats = {
     total: validators.length,
-    pending: validators.filter(v => v.status === 'PENDING').length,
-    approved: validators.filter(v => v.status === 'APPROVED').length,
-    rejected: validators.filter(v => v.status === 'REJECTED').length,
-    suspended: validators.filter(v => v.status === 'SUSPENDED').length,
-  };
+    pending: validators.filter((v) => v.status === 'PENDING').length,
+    approved: validators.filter((v) => v.status === 'APPROVED').length,
+    rejected: validators.filter((v) => v.status === 'REJECTED').length,
+    suspended: validators.filter((v) => v.status === 'SUSPENDED').length,
+  }
 
   return (
     <div className="space-y-6">
@@ -154,31 +164,39 @@ export default function AdminValidatorsPage() {
         <Card>
           <CardContent className="pt-6">
             <div className="text-2xl font-bold">{stats.total}</div>
-            <p className="text-xs text-muted-foreground">Total Validators</p>
+            <p className="text-muted-foreground text-xs">Total Validators</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-yellow-600">{stats.pending}</div>
-            <p className="text-xs text-muted-foreground">Pending</p>
+            <div className="text-2xl font-bold text-yellow-600">
+              {stats.pending}
+            </div>
+            <p className="text-muted-foreground text-xs">Pending</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-green-600">{stats.approved}</div>
-            <p className="text-xs text-muted-foreground">Approved</p>
+            <div className="text-2xl font-bold text-green-600">
+              {stats.approved}
+            </div>
+            <p className="text-muted-foreground text-xs">Approved</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-red-600">{stats.rejected}</div>
-            <p className="text-xs text-muted-foreground">Rejected</p>
+            <div className="text-2xl font-bold text-red-600">
+              {stats.rejected}
+            </div>
+            <p className="text-muted-foreground text-xs">Rejected</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="pt-6">
-            <div className="text-2xl font-bold text-gray-600">{stats.suspended}</div>
-            <p className="text-xs text-muted-foreground">Suspended</p>
+            <div className="text-2xl font-bold text-gray-600">
+              {stats.suspended}
+            </div>
+            <p className="text-muted-foreground text-xs">Suspended</p>
           </CardContent>
         </Card>
       </div>
@@ -207,7 +225,11 @@ export default function AdminValidatorsPage() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => queryClient.invalidateQueries({ queryKey: ['admin', 'validators'] })}
+                onClick={() =>
+                  queryClient.invalidateQueries({
+                    queryKey: ['admin', 'validators'],
+                  })
+                }
               >
                 <RefreshCw className="h-4 w-4" />
               </Button>
@@ -222,7 +244,7 @@ export default function AdminValidatorsPage() {
               ))}
             </div>
           ) : validators.length === 0 ? (
-            <div className="text-center py-8 text-muted-foreground">
+            <div className="text-muted-foreground py-8 text-center">
               No validators found
             </div>
           ) : (
@@ -244,19 +266,38 @@ export default function AdminValidatorsPage() {
                   {validators.map((validator) => (
                     <TableRow key={validator.id}>
                       <TableCell className="font-mono text-xs">
-                        {validator.publicKey.substring(0, 8)}...{validator.publicKey.substring(validator.publicKey.length - 8)}
+                        {validator.publicKey.substring(0, 8)}...
+                        {validator.publicKey.substring(
+                          validator.publicKey.length - 8,
+                        )}
                       </TableCell>
                       <TableCell>{validator.location}</TableCell>
                       <TableCell>
-                        <Badge className={statusConfig[validator.status as ValidatorStatus].color}>
-                          {statusConfig[validator.status as ValidatorStatus].label}
+                        <Badge
+                          className={
+                            statusConfig[validator.status as ValidatorStatus]
+                              .color
+                          }
+                        >
+                          {
+                            statusConfig[validator.status as ValidatorStatus]
+                              .label
+                          }
                         </Badge>
                       </TableCell>
-                      <TableCell>{validator.totalValidations.toLocaleString()}</TableCell>
-                      <TableCell>{validator.totalEarned.toFixed(4)} SOL</TableCell>
-                      <TableCell>{validator.pendingBalance.toFixed(4)} SOL</TableCell>
-                      <TableCell className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(validator.createdAt), { addSuffix: true })}
+                      <TableCell>
+                        {validator.totalValidations.toLocaleString()}
+                      </TableCell>
+                      <TableCell>
+                        {validator.totalEarned.toFixed(4)} SOL
+                      </TableCell>
+                      <TableCell>
+                        {validator.pendingBalance.toFixed(4)} SOL
+                      </TableCell>
+                      <TableCell className="text-muted-foreground text-xs">
+                        {formatDistanceToNow(new Date(validator.createdAt), {
+                          addSuffix: true,
+                        })}
                       </TableCell>
                       <TableCell>
                         <div className="flex items-center gap-2">
@@ -266,7 +307,9 @@ export default function AdminValidatorsPage() {
                                 size="sm"
                                 variant="outline"
                                 className="text-green-600 hover:text-green-700"
-                                onClick={() => approveMutation.mutate(validator.id)}
+                                onClick={() =>
+                                  approveMutation.mutate(validator.id)
+                                }
                                 disabled={approveMutation.isPending}
                               >
                                 <CheckCircle className="h-4 w-4" />
@@ -275,7 +318,9 @@ export default function AdminValidatorsPage() {
                                 size="sm"
                                 variant="outline"
                                 className="text-red-600 hover:text-red-700"
-                                onClick={() => rejectMutation.mutate(validator.id)}
+                                onClick={() =>
+                                  rejectMutation.mutate(validator.id)
+                                }
                                 disabled={rejectMutation.isPending}
                               >
                                 <XCircle className="h-4 w-4" />
@@ -287,18 +332,23 @@ export default function AdminValidatorsPage() {
                               size="sm"
                               variant="outline"
                               className="text-gray-600 hover:text-gray-700"
-                              onClick={() => suspendMutation.mutate(validator.id)}
+                              onClick={() =>
+                                suspendMutation.mutate(validator.id)
+                              }
                               disabled={suspendMutation.isPending}
                             >
                               <Ban className="h-4 w-4" />
                             </Button>
                           )}
-                          {(validator.status === 'REJECTED' || validator.status === 'SUSPENDED') && (
+                          {(validator.status === 'REJECTED' ||
+                            validator.status === 'SUSPENDED') && (
                             <Button
                               size="sm"
                               variant="outline"
                               className="text-green-600 hover:text-green-700"
-                              onClick={() => approveMutation.mutate(validator.id)}
+                              onClick={() =>
+                                approveMutation.mutate(validator.id)
+                              }
                               disabled={approveMutation.isPending}
                             >
                               <CheckCircle className="h-4 w-4" />
@@ -309,8 +359,12 @@ export default function AdminValidatorsPage() {
                             variant="outline"
                             className="text-red-600 hover:text-red-700"
                             onClick={() => {
-                              if (confirm('Are you sure you want to delete this validator?')) {
-                                deleteMutation.mutate(validator.id);
+                              if (
+                                confirm(
+                                  'Are you sure you want to delete this validator?',
+                                )
+                              ) {
+                                deleteMutation.mutate(validator.id)
                               }
                             }}
                             disabled={deleteMutation.isPending}
@@ -328,5 +382,5 @@ export default function AdminValidatorsPage() {
         </CardContent>
       </Card>
     </div>
-  );
+  )
 }

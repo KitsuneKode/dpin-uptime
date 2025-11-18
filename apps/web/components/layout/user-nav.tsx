@@ -3,8 +3,12 @@
 import Link from 'next/link'
 import { LogOut, Settings, User } from 'lucide-react'
 import { authClient } from '@dpin-uptime/auth/client'
-import { Avatar, AvatarFallback, AvatarImage } from '@dpin-uptime/ui/components/avatar'
 import { Button } from '@dpin-uptime/ui/components/button'
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from '@dpin-uptime/ui/components/avatar'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -54,7 +58,10 @@ export function UserNav({ user }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full transition-all hover:ring-2 hover:ring-primary hover:ring-offset-2">
+        <Button
+          variant="ghost"
+          className="hover:ring-primary relative h-8 w-8 rounded-full transition-all hover:ring-2 hover:ring-offset-2"
+        >
           <Avatar className="h-8 w-8">
             <AvatarImage
               src={user.image || getAvatarUrl(user.id)}
@@ -69,29 +76,35 @@ export function UserNav({ user }: UserNavProps) {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">
+            <p className="text-sm leading-none font-medium">
               {user.name || 'User'}
             </p>
-            <p className="text-xs leading-none text-muted-foreground">
+            <p className="text-muted-foreground text-xs leading-none">
               {user.email || 'No email'}
             </p>
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/profile" className="flex items-center cursor-pointer">
+          <Link
+            href="/dashboard/profile"
+            className="flex cursor-pointer items-center"
+          >
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
+          <Link
+            href="/dashboard/settings"
+            className="flex cursor-pointer items-center"
+          >
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem 
+        <DropdownMenuItem
           className="cursor-pointer text-red-600 focus:text-red-600"
           onClick={handleSignOut}
         >

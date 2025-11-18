@@ -1,27 +1,34 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Card, CardContent } from '@dpin-uptime/ui/components/card';
-import { useDashboardMetrics, useIncidents } from '@/hooks/api';
-import { CheckCircle, AlertTriangle, Clock } from 'lucide-react';
+import * as React from 'react'
+import { useDashboardMetrics, useIncidents } from '@/hooks/api'
+import { CheckCircle, AlertTriangle, Clock } from 'lucide-react'
+import { Card, CardContent } from '@dpin-uptime/ui/components/card'
 
 export function SystemStatusBanner() {
-  const { data: metricsResponse } = useDashboardMetrics();
-  const { data: incidentsResponse } = useIncidents({ limit: 5 });
-  
-  const metrics = metricsResponse?.data;
-  const activeIncidents = incidentsResponse?.data?.filter(i => i.status !== 'RESOLVED') || [];
+  const { data: metricsResponse } = useDashboardMetrics()
+  const { data: incidentsResponse } = useIncidents({ limit: 5 })
 
-  const systemStatus = activeIncidents.length === 0 ? 'operational' :
-    activeIncidents.some(i => i.severity === 'CRITICAL') ? 'major-outage' :
-    activeIncidents.some(i => i.severity === 'WARNING') ? 'partial-outage' : 'degraded';
+  const metrics = metricsResponse?.data
+  const activeIncidents =
+    incidentsResponse?.data?.filter((i) => i.status !== 'RESOLVED') || []
+
+  const systemStatus =
+    activeIncidents.length === 0
+      ? 'operational'
+      : activeIncidents.some((i) => i.severity === 'CRITICAL')
+        ? 'major-outage'
+        : activeIncidents.some((i) => i.severity === 'WARNING')
+          ? 'partial-outage'
+          : 'degraded'
 
   const statusConfig = {
     operational: {
       icon: CheckCircle,
       text: 'All Systems Operational',
       description: 'All services are running smoothly',
-      className: 'bg-emerald-50 border-emerald-200 dark:bg-emerald-950 dark:border-emerald-800',
+      className:
+        'bg-emerald-50 border-emerald-200 dark:bg-emerald-950 dark:border-emerald-800',
       textColor: 'text-emerald-800 dark:text-emerald-200',
       iconColor: 'text-emerald-600',
     },
@@ -29,7 +36,8 @@ export function SystemStatusBanner() {
       icon: Clock,
       text: 'Degraded Performance',
       description: 'Some services may be slower than usual',
-      className: 'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800',
+      className:
+        'bg-yellow-50 border-yellow-200 dark:bg-yellow-950 dark:border-yellow-800',
       textColor: 'text-yellow-800 dark:text-yellow-200',
       iconColor: 'text-yellow-600',
     },
@@ -37,7 +45,8 @@ export function SystemStatusBanner() {
       icon: AlertTriangle,
       text: 'Partial System Outage',
       description: 'Some services are experiencing issues',
-      className: 'bg-orange-50 border-orange-200 dark:bg-orange-950 dark:border-orange-800',
+      className:
+        'bg-orange-50 border-orange-200 dark:bg-orange-950 dark:border-orange-800',
       textColor: 'text-orange-800 dark:text-orange-200',
       iconColor: 'text-orange-600',
     },
@@ -49,10 +58,10 @@ export function SystemStatusBanner() {
       textColor: 'text-red-800 dark:text-red-200',
       iconColor: 'text-red-600',
     },
-  };
+  }
 
-  const config = statusConfig[systemStatus];
-  const StatusIcon = config.icon;
+  const config = statusConfig[systemStatus]
+  const StatusIcon = config.icon
 
   return (
     <Card className={`${config.className} border-2`}>
@@ -69,7 +78,7 @@ export function SystemStatusBanner() {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4 text-sm">
             {metrics && (
               <>
@@ -103,5 +112,5 @@ export function SystemStatusBanner() {
         </div>
       </CardContent>
     </Card>
-  );
+  )
 }

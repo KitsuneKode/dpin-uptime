@@ -3,13 +3,13 @@ import { PORT } from './utils/config'
 
 const availableValidators: AvailableValidator[] = []
 
+import { withdrawalProcessor } from './jobs/withdrawal-processor'
 import type { IncomingMessage } from '@dpin-uptime/common/types'
 import { PingScheduler } from './services/ping-scheduler'
 import { validateHandler } from './handler/validate'
 import { signupHandler } from './handler/sign-up'
 import { verifyMessage } from './handler/message'
 import type { AvailableValidator } from './types'
-import { withdrawalProcessor } from './jobs/withdrawal-processor'
 
 const server = Bun.serve<{ user: InferUser }, {}>({
   fetch(req, server) {

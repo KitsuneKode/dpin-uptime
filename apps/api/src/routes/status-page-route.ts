@@ -96,9 +96,10 @@ router.post('/status-pages', async (req, res) => {
         theme: theme || 'light',
         userId: req.user!.id,
         monitors: {
-          create: monitors?.map((monitorId: string) => ({
-            monitorId,
-          })) || [],
+          create:
+            monitors?.map((monitorId: string) => ({
+              monitorId,
+            })) || [],
         },
       },
       include: {
@@ -120,14 +121,14 @@ router.post('/status-pages', async (req, res) => {
     res.status(201).json({
       data: transformedPage,
       success: true,
-      message: 'Status page created successfully'
+      message: 'Status page created successfully',
     })
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         res.status(409).json({
           success: false,
-          message: 'A status page with this subdomain already exists'
+          message: 'A status page with this subdomain already exists',
         })
         return
       }
@@ -189,14 +190,14 @@ router.patch('/status-pages/:id', async (req, res) => {
     res.status(200).json({
       data: transformedPage,
       success: true,
-      message: 'Status page updated successfully'
+      message: 'Status page updated successfully',
     })
   } catch (error) {
     if (error instanceof PrismaClientKnownRequestError) {
       if (error.code === 'P2002') {
         res.status(409).json({
           success: false,
-          message: 'A status page with this subdomain already exists'
+          message: 'A status page with this subdomain already exists',
         })
         return
       }
@@ -227,7 +228,7 @@ router.delete('/status-pages/:id', async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: 'Status page deleted successfully'
+      message: 'Status page deleted successfully',
     })
   } catch (error) {
     throw error

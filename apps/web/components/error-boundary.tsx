@@ -1,9 +1,14 @@
 'use client'
 
 import React from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card'
-import { Button } from '@dpin-uptime/ui/components/button'
 import { AlertTriangle, RefreshCw } from 'lucide-react'
+import { Button } from '@dpin-uptime/ui/components/button'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@dpin-uptime/ui/components/card'
 
 interface ErrorBoundaryState {
   hasError: boolean
@@ -64,7 +69,7 @@ function DefaultErrorFallback({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 text-center">
-        <p className="text-sm text-muted-foreground">
+        <p className="text-muted-foreground text-sm">
           {error?.message || 'An unexpected error occurred'}
         </p>
         <Button onClick={retry} variant="outline" className="w-full">

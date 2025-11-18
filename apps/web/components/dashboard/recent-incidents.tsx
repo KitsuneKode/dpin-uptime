@@ -19,7 +19,8 @@ const severityConfig = {
     icon: Clock,
   },
   WARNING: {
-    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     icon: AlertTriangle,
   },
   CRITICAL: {
@@ -35,7 +36,8 @@ const statusConfig = {
     icon: AlertTriangle,
   },
   ACKNOWLEDGED: {
-    color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+    color:
+      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
     label: 'Acknowledged',
     icon: Clock,
   },

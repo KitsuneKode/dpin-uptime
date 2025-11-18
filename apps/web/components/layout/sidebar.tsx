@@ -106,7 +106,7 @@ export function Sidebar() {
           <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
             <Zap className="text-primary-foreground h-5 w-5" />
           </div>
-          <span className="text-lg font-semibold transition-colors group-hover:text-primary">
+          <span className="group-hover:text-primary text-lg font-semibold transition-colors">
             Uptime
           </span>
         </Link>
@@ -179,33 +179,39 @@ export function Sidebar() {
 
       {/* Status Summary */}
       <div className="border-t p-4">
-        <div className="bg-muted rounded-lg p-3 transition-all duration-200 hover:shadow-md hover:bg-muted/80">
-          <div className="text-muted-foreground mb-2 text-xs font-medium uppercase tracking-wide">
+        <div className="bg-muted hover:bg-muted/80 rounded-lg p-3 transition-all duration-200 hover:shadow-md">
+          <div className="text-muted-foreground mb-2 text-xs font-medium tracking-wide uppercase">
             System Status
           </div>
           <div className="space-y-2 text-xs">
-            <div className="flex justify-between items-center py-0.5">
+            <div className="flex items-center justify-between py-0.5">
               <span className="text-muted-foreground">Monitors:</span>
-              <span className="font-semibold tabular-nums">{metrics?.totalMonitors || 0}</span>
+              <span className="font-semibold tabular-nums">
+                {metrics?.totalMonitors || 0}
+              </span>
             </div>
-            <div className="flex justify-between items-center py-0.5">
+            <div className="flex items-center justify-between py-0.5">
               <span className="text-muted-foreground">Uptime:</span>
               <span className="font-semibold tabular-nums">
                 {metrics ? `${metrics.overallUptime.toFixed(2)}%` : '—'}
               </span>
             </div>
-            <div className="flex justify-between items-center py-0.5">
+            <div className="flex items-center justify-between py-0.5">
               <span className="text-muted-foreground">Incidents:</span>
               <span
                 className={cn(
-                  'font-semibold tabular-nums flex items-center gap-1',
+                  'flex items-center gap-1 font-semibold tabular-nums',
                   activeIncidents > 0 ? 'text-red-600' : 'text-green-600',
                 )}
               >
-                <span className={cn(
-                  'h-1.5 w-1.5 rounded-full',
-                  activeIncidents > 0 ? 'bg-red-600 animate-pulse' : 'bg-green-600'
-                )}/>
+                <span
+                  className={cn(
+                    'h-1.5 w-1.5 rounded-full',
+                    activeIncidents > 0
+                      ? 'animate-pulse bg-red-600'
+                      : 'bg-green-600',
+                  )}
+                />
                 {activeIncidents}
               </span>
             </div>

@@ -1,48 +1,63 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
-import { Button } from '@dpin-uptime/ui/components/button';
-import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@dpin-uptime/ui/components/dialog';
-import { Badge } from '@dpin-uptime/ui/components/badge';
-import { useStatusPages, useDeleteStatusPage } from '@/hooks/api';
-import { StatusPageForm, StatusPagePreview } from '@/components/status-pages';
-import type { StatusPage } from '@/lib/types';
-import { Globe, Eye, Pencil, Trash2, Plus } from 'lucide-react';
+import * as React from 'react'
+import type { StatusPage } from '@/lib/types'
+import { Badge } from '@dpin-uptime/ui/components/badge'
+import { Button } from '@dpin-uptime/ui/components/button'
+import { Skeleton } from '@dpin-uptime/ui/components/skeleton'
+import { Globe, Eye, Pencil, Trash2, Plus } from 'lucide-react'
+import { useStatusPages, useDeleteStatusPage } from '@/hooks/api'
+import { StatusPageForm, StatusPagePreview } from '@/components/status-pages'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@dpin-uptime/ui/components/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@dpin-uptime/ui/components/dialog'
 
 export default function StatusPagesPage() {
-  const { data: pagesResponse, isLoading } = useStatusPages();
-  const deleteStatusPage = useDeleteStatusPage();
+  const { data: pagesResponse, isLoading } = useStatusPages()
+  const deleteStatusPage = useDeleteStatusPage()
 
-  const pages = pagesResponse?.data || [];
+  const pages = pagesResponse?.data || []
 
-  const [createOpen, setCreateOpen] = React.useState(false);
-  const [editing, setEditing] = React.useState<StatusPage | null>(null);
-  const [previewing, setPreviewing] = React.useState<StatusPage | null>(null);
+  const [createOpen, setCreateOpen] = React.useState(false)
+  const [editing, setEditing] = React.useState<StatusPage | null>(null)
+  const [previewing, setPreviewing] = React.useState<StatusPage | null>(null)
 
   const handleDelete = async (id: string) => {
     if (confirm('Delete this status page?')) {
       try {
-        await deleteStatusPage.mutateAsync(id);
+        await deleteStatusPage.mutateAsync(id)
       } catch (e) {
-        console.error(e);
+        console.error(e)
       }
     }
-  };
+  }
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Status Pages</h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-muted-foreground mt-1 text-sm">
             Manage public-facing status pages for your services
-            {pages.length > 0 && ` • ${pages.length} ${pages.length === 1 ? 'page' : 'pages'}`}
+            {pages.length > 0 &&
+              ` • ${pages.length} ${pages.length === 1 ? 'page' : 'pages'}`}
           </p>
         </div>
-        <Button onClick={() => setCreateOpen(true)} size="lg" className="shadow-sm">
-          <Plus className="h-4 w-4 mr-2" />
+        <Button
+          onClick={() => setCreateOpen(true)}
+          size="lg"
+          className="shadow-sm"
+        >
+          <Plus className="mr-2 h-4 w-4" />
           Create Status Page
         </Button>
       </div>
@@ -55,7 +70,7 @@ export default function StatusPagesPage() {
                 <Skeleton className="h-5 w-40" />
               </CardHeader>
               <CardContent>
-                <Skeleton className="h-4 w-32 mb-2" />
+                <Skeleton className="mb-2 h-4 w-32" />
                 <Skeleton className="h-8 w-24" />
               </CardContent>
             </Card>
@@ -64,15 +79,16 @@ export default function StatusPagesPage() {
       ) : pages.length === 0 ? (
         <Card className="border-dashed">
           <CardContent className="py-16 text-center">
-            <div className="mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-              <Globe className="h-8 w-8 text-primary" />
+            <div className="bg-primary/10 mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full">
+              <Globe className="text-primary h-8 w-8" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">No status pages yet</h3>
-            <p className="text-muted-foreground mb-6 max-w-md mx-auto">
-              Create a public status page to keep your users informed about service availability and incidents.
+            <h3 className="mb-2 text-lg font-semibold">No status pages yet</h3>
+            <p className="text-muted-foreground mx-auto mb-6 max-w-md">
+              Create a public status page to keep your users informed about
+              service availability and incidents.
             </p>
             <Button onClick={() => setCreateOpen(true)} size="lg">
-              <Plus className="h-4 w-4 mr-2" />
+              <Plus className="mr-2 h-4 w-4" />
               Create Your First Status Page
             </Button>
           </CardContent>
@@ -80,24 +96,33 @@ export default function StatusPagesPage() {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {pages.map((page) => (
-            <Card key={page.id} className="flex flex-col transition-all duration-200 hover:shadow-lg hover:border-primary/50 group">
+            <Card
+              key={page.id}
+              className="hover:border-primary/50 group flex flex-col transition-all duration-200 hover:shadow-lg"
+            >
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <div className="bg-primary/10 p-2 rounded-lg transition-transform group-hover:scale-110">
-                    <Globe className="h-5 w-5 text-primary" />
+                  <div className="bg-primary/10 rounded-lg p-2 transition-transform group-hover:scale-110">
+                    <Globe className="text-primary h-5 w-5" />
                   </div>
-                  <span className="transition-colors group-hover:text-primary">{page.companyName}</span>
+                  <span className="group-hover:text-primary transition-colors">
+                    {page.companyName}
+                  </span>
                 </CardTitle>
               </CardHeader>
-              <CardContent className="flex-1 flex flex-col gap-4">
+              <CardContent className="flex flex-1 flex-col gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-muted-foreground">Subdomain:</span>
-                    <Badge variant="secondary" className="font-mono">{page.subdomain}</Badge>
+                    <Badge variant="secondary" className="font-mono">
+                      {page.subdomain}
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-muted-foreground">Theme:</span>
-                    <Badge variant="outline" className="capitalize">{page.theme}</Badge>
+                    <Badge variant="outline" className="capitalize">
+                      {page.theme}
+                    </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-muted-foreground">Monitors:</span>
@@ -105,16 +130,31 @@ export default function StatusPagesPage() {
                   </div>
                 </div>
                 <div className="mt-auto flex flex-wrap items-center gap-2">
-                  <Button variant="ghost" size="sm" onClick={() => setPreviewing(page)} className="hover:bg-primary/10 hover:text-primary">
-                    <Eye className="h-4 w-4 mr-1" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setPreviewing(page)}
+                    className="hover:bg-primary/10 hover:text-primary"
+                  >
+                    <Eye className="mr-1 h-4 w-4" />
                     Preview
                   </Button>
-                  <Button variant="outline" size="sm" onClick={() => setEditing(page)} className="hover:bg-primary hover:text-primary-foreground">
-                    <Pencil className="h-4 w-4 mr-1" />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditing(page)}
+                    className="hover:bg-primary hover:text-primary-foreground"
+                  >
+                    <Pencil className="mr-1 h-4 w-4" />
                     Edit
                   </Button>
-                  <Button variant="ghost" size="sm" className="text-red-600 hover:bg-red-50 hover:text-red-700" onClick={() => handleDelete(page.id)}>
-                    <Trash2 className="h-4 w-4 mr-1" />
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="text-red-600 hover:bg-red-50 hover:text-red-700"
+                    onClick={() => handleDelete(page.id)}
+                  >
+                    <Trash2 className="mr-1 h-4 w-4" />
                     Delete
                   </Button>
                 </div>
@@ -129,24 +169,37 @@ export default function StatusPagesPage() {
           <DialogHeader>
             <DialogTitle>Create Status Page</DialogTitle>
           </DialogHeader>
-          <StatusPageForm onSuccess={() => setCreateOpen(false)} onCancel={() => setCreateOpen(false)} />
+          <StatusPageForm
+            onSuccess={() => setCreateOpen(false)}
+            onCancel={() => setCreateOpen(false)}
+          />
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!editing} onOpenChange={(open) => !open && setEditing(null)}>
+      <Dialog
+        open={!!editing}
+        onOpenChange={(open) => !open && setEditing(null)}
+      >
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Status Page</DialogTitle>
           </DialogHeader>
           {editing && (
-            <StatusPageForm statusPage={editing} onSuccess={() => setEditing(null)} onCancel={() => setEditing(null)} />
+            <StatusPageForm
+              statusPage={editing}
+              onSuccess={() => setEditing(null)}
+              onCancel={() => setEditing(null)}
+            />
           )}
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!previewing} onOpenChange={(open) => !open && setPreviewing(null)}>
-        <DialogContent className="max-w-6xl max-h-[90vh] p-0 overflow-hidden flex flex-col">
-          <DialogHeader className="px-6 py-4 border-b">
+      <Dialog
+        open={!!previewing}
+        onOpenChange={(open) => !open && setPreviewing(null)}
+      >
+        <DialogContent className="flex max-h-[90vh] max-w-6xl flex-col overflow-hidden p-0">
+          <DialogHeader className="border-b px-6 py-4">
             <div className="flex items-center justify-between">
               <DialogTitle>Preview</DialogTitle>
               {previewing && (
@@ -156,11 +209,11 @@ export default function StatusPagesPage() {
               )}
             </div>
           </DialogHeader>
-          <div className="overflow-y-auto flex-1">
+          <div className="flex-1 overflow-y-auto">
             {previewing && <StatusPagePreview statusPage={previewing} />}
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

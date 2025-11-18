@@ -77,7 +77,9 @@ class MockApiClient {
     return wrapApiResponse(monitor)
   }
 
-  async createMonitor(data: CreateMonitorData): Promise<{ success: boolean; message: string } & Partial<Monitor>> {
+  async createMonitor(
+    data: CreateMonitorData,
+  ): Promise<{ success: boolean; message: string } & Partial<Monitor>> {
     await delay(600)
 
     const newMonitor: Monitor = {
@@ -98,7 +100,11 @@ class MockApiClient {
     }
 
     mockMonitors.push(newMonitor)
-    return { success: true, message: 'Monitor created successfully', ...newMonitor }
+    return {
+      success: true,
+      message: 'Monitor created successfully',
+      ...newMonitor,
+    }
   }
 
   async updateMonitor(data: UpdateMonitorData): Promise<ApiResponse<Monitor>> {
@@ -111,7 +117,7 @@ class MockApiClient {
 
     const existingMonitor = mockMonitors[index]!
     const updates = Object.fromEntries(
-      Object.entries(data).filter(([_, value]) => value !== undefined)
+      Object.entries(data).filter(([_, value]) => value !== undefined),
     )
 
     const updatedMonitor: Monitor = {
@@ -124,7 +130,9 @@ class MockApiClient {
     return wrapApiResponse(updatedMonitor)
   }
 
-  async deleteMonitor(id: string): Promise<{ success: boolean; message: string }> {
+  async deleteMonitor(
+    id: string,
+  ): Promise<{ success: boolean; message: string }> {
     await delay(400)
 
     const index = mockMonitors.findIndex((m) => m.id === id)
@@ -176,11 +184,7 @@ class MockApiClient {
     const monitorId = params.monitorIds?.[0] || 'mock-monitor'
     const period = (params.period as TimePeriod) || 'day'
 
-    const data = generateMockResponseTimeData(
-      monitorId,
-      period,
-      'us-east',
-    )
+    const data = generateMockResponseTimeData(monitorId, period, 'us-east')
 
     return wrapApiResponse(data)
   }
@@ -325,9 +329,17 @@ class MockApiClient {
   }
 
   // Admin - Validators (mock implementations)
-  async registerValidator(data: { publicKey: string; location: string; ip: string }): Promise<ApiResponse<any>> {
+  async registerValidator(data: {
+    publicKey: string
+    location: string
+    ip: string
+  }): Promise<ApiResponse<any>> {
     await delay(400)
-    return wrapApiResponse({ id: 'mock-validator-id', ...data, status: 'PENDING' })
+    return wrapApiResponse({
+      id: 'mock-validator-id',
+      ...data,
+      status: 'PENDING',
+    })
   }
 
   async getValidators(status?: string): Promise<{ data: any[] }> {

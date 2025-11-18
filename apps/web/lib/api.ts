@@ -122,10 +122,13 @@ class ApiClient {
   async deleteMonitor(
     id: string,
   ): Promise<{ success: boolean; message: string }> {
-    const response = await this.request<{ success: boolean; message: string }>('/api/v1/monitor', {
-      method: 'DELETE',
-      body: JSON.stringify({ websiteId: id }),
-    })
+    const response = await this.request<{ success: boolean; message: string }>(
+      '/api/v1/monitor',
+      {
+        method: 'DELETE',
+        body: JSON.stringify({ websiteId: id }),
+      },
+    )
     return response
   }
 
@@ -213,7 +216,11 @@ class ApiClient {
   }
 
   // Admin - Validators
-  async registerValidator(data: { publicKey: string; location: string; ip: string }): Promise<ApiResponse<any>> {
+  async registerValidator(data: {
+    publicKey: string
+    location: string
+    ip: string
+  }): Promise<ApiResponse<any>> {
     return this.request('/api/v1/admin/validators', {
       method: 'POST',
       body: JSON.stringify(data),

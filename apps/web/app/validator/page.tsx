@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
 import { API_BASE_URL } from '@/utils/config'
 import { formatDistanceToNow } from 'date-fns'
+import { useState, useEffect, useRef } from 'react'
 import { useWallet } from '@solana/wallet-adapter-react'
 import { Badge } from '@dpin-uptime/ui/components/badge'
 import { Input } from '@dpin-uptime/ui/components/input'

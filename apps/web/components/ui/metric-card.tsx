@@ -1,17 +1,22 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
-import { Skeleton } from '@dpin-uptime/ui/components/skeleton';
-import { cn } from '@dpin-uptime/ui/lib/utils';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { cn } from '@dpin-uptime/ui/lib/utils'
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react'
+import { Skeleton } from '@dpin-uptime/ui/components/skeleton'
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from '@dpin-uptime/ui/components/card'
 
 interface MetricCardProps {
-  title: string;
-  value: string | number;
-  description?: string;
-  trend?: 'up' | 'down' | 'neutral';
-  trendValue?: string;
-  icon?: React.ReactNode;
-  className?: string;
-  isLoading?: boolean;
+  title: string
+  value: string | number
+  description?: string
+  trend?: 'up' | 'down' | 'neutral'
+  trendValue?: string
+  icon?: React.ReactNode
+  className?: string
+  isLoading?: boolean
 }
 
 const trendConfig = {
@@ -30,7 +35,7 @@ const trendConfig = {
     color: 'text-gray-600',
     bgColor: 'bg-gray-50 dark:bg-gray-950',
   },
-} as const;
+} as const
 
 export function MetricCard({
   title,
@@ -50,42 +55,40 @@ export function MetricCard({
           <Skeleton className="h-4 w-4 rounded" />
         </CardHeader>
         <CardContent>
-          <Skeleton className="h-8 w-16 mb-2" />
+          <Skeleton className="mb-2 h-8 w-16" />
           <Skeleton className="h-3 w-32" />
         </CardContent>
       </Card>
-    );
+    )
   }
 
-  const trendIcon = trend ? trendConfig[trend].icon : null;
-  const TrendIcon = trendIcon;
+  const trendIcon = trend ? trendConfig[trend].icon : null
+  const TrendIcon = trendIcon
 
   return (
     <Card className={className}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="text-sm font-medium text-muted-foreground">
+        <CardTitle className="text-muted-foreground text-sm font-medium">
           {title}
         </CardTitle>
-        {icon && (
-          <div className="h-4 w-4 text-muted-foreground">
-            {icon}
-          </div>
-        )}
+        {icon && <div className="text-muted-foreground h-4 w-4">{icon}</div>}
       </CardHeader>
       <CardContent>
         <div className="text-2xl font-bold">{value}</div>
         {(description || trend) && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+          <div className="text-muted-foreground mt-1 flex items-center gap-2 text-xs">
             {trend && TrendIcon && (
-              <div className={cn(
-                'flex items-center gap-1 px-1.5 py-0.5 rounded-full',
-                trendConfig[trend].bgColor
-              )}>
-                <TrendIcon className={cn('h-3 w-3', trendConfig[trend].color)} />
+              <div
+                className={cn(
+                  'flex items-center gap-1 rounded-full px-1.5 py-0.5',
+                  trendConfig[trend].bgColor,
+                )}
+              >
+                <TrendIcon
+                  className={cn('h-3 w-3', trendConfig[trend].color)}
+                />
                 {trendValue && (
-                  <span className={trendConfig[trend].color}>
-                    {trendValue}
-                  </span>
+                  <span className={trendConfig[trend].color}>{trendValue}</span>
                 )}
               </div>
             )}
@@ -94,5 +97,5 @@ export function MetricCard({
         )}
       </CardContent>
     </Card>
-  );
+  )
 }

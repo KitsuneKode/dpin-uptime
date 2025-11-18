@@ -27,9 +27,7 @@ export class ConfigLoader<T extends Record<string, any>> {
     requiredKeys.forEach((key) => {
       const value = this.config[key]
       if (value === undefined || value === null) {
-        throw new Error(
-          `Configuration key "${String(key)}" is required but not provided.`,
-        )
+        throw new Error(`Configuration key "${String(key)}" is required but not provided.`)
       }
     })
   }

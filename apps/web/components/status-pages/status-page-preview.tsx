@@ -1,41 +1,43 @@
-'use client';
+'use client'
 
-import { Badge } from '@dpin-uptime/ui/components/badge';
-import { StatusIndicator } from '@/components/ui/status-indicator';
-import { UptimeStatusBar } from '@/components/ui/uptime-status-bar';
-import { useMonitors } from '@/hooks/api';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { formatDistanceToNow } from 'date-fns';
-import type { StatusPage, WebsiteTick } from '@/lib/types';
+import { api } from '@/lib/api'
+import { useMonitors } from '@/hooks/api'
+import { formatDistanceToNow } from 'date-fns'
+import { useQuery } from '@tanstack/react-query'
+import { Badge } from '@dpin-uptime/ui/components/badge'
+import type { StatusPage, WebsiteTick } from '@/lib/types'
+import { StatusIndicator } from '@/components/ui/status-indicator'
+import { UptimeStatusBar } from '@/components/ui/uptime-status-bar'
 
 interface StatusPagePreviewProps {
-  statusPage: StatusPage;
+  statusPage: StatusPage
 }
 
 export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
-  const { data: monitorsResponse } = useMonitors({ limit: 100 });
-  const allMonitors = monitorsResponse?.websites || [];
+  const { data: monitorsResponse } = useMonitors({ limit: 100 })
+  const allMonitors = monitorsResponse?.websites || []
 
   // Filter monitors that are included in this status page
   const selectedMonitors = allMonitors.filter((monitor) =>
-    statusPage.monitors.includes(monitor.id)
-  );
+    statusPage.monitors.includes(monitor.id),
+  )
 
   const overallStatus = selectedMonitors.every((m) => m.status === 'up')
     ? 'operational'
     : selectedMonitors.some((m) => m.status === 'down')
-    ? 'major-outage'
-    : 'partial-outage';
+      ? 'major-outage'
+      : 'partial-outage'
 
   const statusConfig = {
     operational: {
-      color: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
+      color:
+        'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300',
       text: 'All Systems Operational',
       indicator: 'up' as const,
     },
     'partial-outage': {
-      color: 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
+      color:
+        'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300',
       text: 'Partial System Outage',
       indicator: 'degraded' as const,
     },
@@ -44,20 +46,22 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
       text: 'Major System Outage',
       indicator: 'down' as const,
     },
-  };
+  }
 
-  const currentStatus = statusConfig[overallStatus];
+  const currentStatus = statusConfig[overallStatus]
 
   return (
-    <div className={`p-8 ${statusPage.theme === 'dark' ? 'dark bg-gray-900' : 'bg-background'}`}>
+    <div
+      className={`p-8 ${statusPage.theme === 'dark' ? 'dark bg-gray-900' : 'bg-background'}`}
+    >
       <div className="space-y-8">
         {/* Header */}
-        <div className="text-center space-y-4">
+        <div className="space-y-4 text-center">
           {statusPage.logoUrl && (
             <img
               src={statusPage.logoUrl}
               alt={`${statusPage.companyName} logo`}
-              className="h-12 mx-auto"
+              className="mx-auto h-12"
             />
           )}
           <h1 className="text-3xl font-bold">
@@ -65,9 +69,7 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
           </h1>
           <div className="flex items-center justify-center gap-2">
             <StatusIndicator status={currentStatus.indicator} size="md" />
-            <Badge className={currentStatus.color}>
-              {currentStatus.text}
-            </Badge>
+            <Badge className={currentStatus.color}>{currentStatus.text}</Badge>
           </div>
         </div>
 
@@ -75,7 +77,7 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
         <div className="space-y-4">
           <h2 className="text-lg font-semibold">Services</h2>
           {selectedMonitors.length === 0 ? (
-            <div className="text-center text-muted-foreground py-12 border rounded-lg">
+            <div className="text-muted-foreground rounded-lg border py-12 text-center">
               <p>No services configured for this status page</p>
             </div>
           ) : (
@@ -88,12 +90,18 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
         </div>
 
         {/* Footer */}
-        <div className="text-center pt-6 border-t text-sm text-muted-foreground">
-          <p>Last updated {formatDistanceToNow(new Date(), { addSuffix: true, includeSeconds: true })}</p>
+        <div className="text-muted-foreground border-t pt-6 text-center text-sm">
+          <p>
+            Last updated{' '}
+            {formatDistanceToNow(new Date(), {
+              addSuffix: true,
+              includeSeconds: true,
+            })}
+          </p>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 // Monitor status row component with uptime bar
@@ -102,24 +110,22 @@ function MonitorStatusRow({ monitor }: { monitor: any }) {
   const { data: ticksResponse } = useQuery({
     queryKey: ['monitor-ticks', monitor.id],
     queryFn: async () => {
-      const response = await api.getMonitorTicks(monitor.id);
-      return response;
+      const response = await api.getMonitorTicks(monitor.id)
+      return response
     },
     refetchInterval: 30000, // Refetch every 30 seconds
-  });
+  })
 
-  const ticks: WebsiteTick[] = ticksResponse?.data || [];
+  const ticks: WebsiteTick[] = ticksResponse?.data || []
 
   return (
-    <div className="p-4 border rounded-lg bg-card">
-      <div className="flex items-center justify-between gap-4 mb-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
+    <div className="bg-card rounded-lg border p-4">
+      <div className="mb-3 flex items-center justify-between gap-4">
+        <div className="flex min-w-0 flex-1 items-center gap-3">
           <StatusIndicator status={monitor.status} size="sm" />
           <div className="min-w-0 flex-1">
-            <h3 className="font-medium truncate">
-              {monitor.name}
-            </h3>
-            <p className="text-sm text-muted-foreground truncate">
+            <h3 className="truncate font-medium">{monitor.name}</h3>
+            <p className="text-muted-foreground truncate text-sm">
               {monitor.url}
             </p>
           </div>
@@ -127,20 +133,22 @@ function MonitorStatusRow({ monitor }: { monitor: any }) {
 
         <div className="text-right">
           <div className="text-sm font-medium">
-            {monitor.status === 'up' ? 'Operational' :
-             monitor.status === 'down' ? 'Down' :
-             monitor.status === 'degraded' ? 'Degraded' : 'Paused'}
+            {monitor.status === 'up'
+              ? 'Operational'
+              : monitor.status === 'down'
+                ? 'Down'
+                : monitor.status === 'degraded'
+                  ? 'Degraded'
+                  : 'Paused'}
           </div>
-          <div className="text-xs text-muted-foreground">
+          <div className="text-muted-foreground text-xs">
             {monitor.responseTime}ms
           </div>
         </div>
       </div>
 
       {/* Uptime bar */}
-      {ticks.length > 0 && (
-        <UptimeStatusBar ticks={ticks} days={90} />
-      )}
+      {ticks.length > 0 && <UptimeStatusBar ticks={ticks} days={90} />}
     </div>
-  );
+  )
 }

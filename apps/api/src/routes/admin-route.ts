@@ -1,8 +1,8 @@
-import { Router } from 'express';
-import { authMiddleware } from '@/middlewares/auth-middleware';
-import { prisma } from '@dpin-uptime/store';
+import { authMiddleware } from '@/middlewares/auth-middleware'
+import { prisma } from '@dpin-uptime/store'
+import { Router } from 'express'
 
-const router = Router();
+const router = Router()
 
 /**
  * POST /api/v1/admin/validators
@@ -11,27 +11,27 @@ const router = Router();
  */
 router.post('/admin/validators', async (req, res) => {
   try {
-    const { publicKey, location, ip } = req.body;
+    const { publicKey, location, ip } = req.body
 
     if (!publicKey || !location || !ip) {
       res.status(400).json({
         success: false,
         message: 'Missing required fields: publicKey, location, ip',
-      });
-      return;
+      })
+      return
     }
 
     // Check if validator already exists
     const existing = await prisma.validator.findUnique({
       where: { publicKey },
-    });
+    })
 
     if (existing) {
       res.status(409).json({
         success: false,
         message: 'Validator with this public key already exists',
-      });
-      return;
+      })
+      return
     }
 
     // Create validator with PENDING status
@@ -42,17 +42,17 @@ router.post('/admin/validators', async (req, res) => {
         ip,
         status: 'PENDING',
       },
-    });
+    })
 
     res.status(201).json({
       success: true,
       data: validator,
       message: 'Validator registration submitted. Waiting for approval.',
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
 /**
  * GET /api/v1/admin/validators
@@ -61,11 +61,11 @@ router.post('/admin/validators', async (req, res) => {
  */
 router.get('/admin/validators', authMiddleware, async (req, res) => {
   try {
-    const status = req.query.status as string | undefined;
+    const status = req.query.status as string | undefined
 
-    const whereClause: any = {};
+    const whereClause: any = {}
     if (status) {
-      whereClause.status = status;
+      whereClause.status = status
     }
 
     const validators = await prisma.validator.findMany({
@@ -82,11 +82,11 @@ router.get('/admin/validators', authMiddleware, async (req, res) => {
       orderBy: {
         createdAt: 'desc',
       },
-    });
+    })
 
     res.status(200).json({
       success: true,
-      data: validators.map(v => ({
+      data: validators.map((v) => ({
         id: v.id,
         publicKey: v.publicKey,
         location: v.location,
@@ -103,11 +103,11 @@ router.get('/admin/validators', authMiddleware, async (req, res) => {
         createdAt: v.createdAt,
         updatedAt: v.updatedAt,
       })),
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
 /**
  * PATCH /api/v1/admin/validators/:id/approve
@@ -116,27 +116,27 @@ router.get('/admin/validators', authMiddleware, async (req, res) => {
  */
 router.patch('/admin/validators/:id/approve', authMiddleware, async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user!.id;
+    const { id } = req.params
+    const userId = req.user!.id
 
     const validator = await prisma.validator.findUnique({
       where: { id },
-    });
+    })
 
     if (!validator) {
       res.status(404).json({
         success: false,
         message: 'Validator not found',
-      });
-      return;
+      })
+      return
     }
 
     if (validator.status === 'APPROVED') {
       res.status(400).json({
         success: false,
         message: 'Validator is already approved',
-      });
-      return;
+      })
+      return
     }
 
     const updated = await prisma.validator.update({
@@ -146,17 +146,17 @@ router.patch('/admin/validators/:id/approve', authMiddleware, async (req, res) =
         approvedAt: new Date(),
         approvedBy: userId,
       },
-    });
+    })
 
     res.status(200).json({
       success: true,
       data: updated,
       message: 'Validator approved successfully',
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
 /**
  * PATCH /api/v1/admin/validators/:id/reject
@@ -165,19 +165,19 @@ router.patch('/admin/validators/:id/approve', authMiddleware, async (req, res) =
  */
 router.patch('/admin/validators/:id/reject', authMiddleware, async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user!.id;
+    const { id } = req.params
+    const userId = req.user!.id
 
     const validator = await prisma.validator.findUnique({
       where: { id },
-    });
+    })
 
     if (!validator) {
       res.status(404).json({
         success: false,
         message: 'Validator not found',
-      });
-      return;
+      })
+      return
     }
 
     const updated = await prisma.validator.update({
@@ -186,17 +186,17 @@ router.patch('/admin/validators/:id/reject', authMiddleware, async (req, res) =>
         status: 'REJECTED',
         approvedBy: userId,
       },
-    });
+    })
 
     res.status(200).json({
       success: true,
       data: updated,
       message: 'Validator rejected',
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
 /**
  * PATCH /api/v1/admin/validators/:id/suspend
@@ -205,19 +205,19 @@ router.patch('/admin/validators/:id/reject', authMiddleware, async (req, res) =>
  */
 router.patch('/admin/validators/:id/suspend', authMiddleware, async (req, res) => {
   try {
-    const { id } = req.params;
-    const userId = req.user!.id;
+    const { id } = req.params
+    const userId = req.user!.id
 
     const validator = await prisma.validator.findUnique({
       where: { id },
-    });
+    })
 
     if (!validator) {
       res.status(404).json({
         success: false,
         message: 'Validator not found',
-      });
-      return;
+      })
+      return
     }
 
     const updated = await prisma.validator.update({
@@ -226,17 +226,17 @@ router.patch('/admin/validators/:id/suspend', authMiddleware, async (req, res) =
         status: 'SUSPENDED',
         approvedBy: userId,
       },
-    });
+    })
 
     res.status(200).json({
       success: true,
       data: updated,
       message: 'Validator suspended',
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
 /**
  * DELETE /api/v1/admin/validators/:id
@@ -245,18 +245,18 @@ router.patch('/admin/validators/:id/suspend', authMiddleware, async (req, res) =
  */
 router.delete('/admin/validators/:id', authMiddleware, async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.params
 
     const validator = await prisma.validator.findUnique({
       where: { id },
-    });
+    })
 
     if (!validator) {
       res.status(404).json({
         success: false,
         message: 'Validator not found',
-      });
-      return;
+      })
+      return
     }
 
     // Soft delete by setting status to REJECTED
@@ -265,15 +265,15 @@ router.delete('/admin/validators/:id', authMiddleware, async (req, res) => {
       data: {
         status: 'REJECTED',
       },
-    });
+    })
 
     res.status(200).json({
       success: true,
       message: 'Validator deleted successfully',
-    });
+    })
   } catch (error) {
-    throw error;
+    throw error
   }
-});
+})
 
-export { router as adminRouter };
+export { router as adminRouter }

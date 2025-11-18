@@ -1,18 +1,18 @@
-import { Navbar } from '@/components/layout/navbar'
-import { Footer } from '@/components/layout/footer'
 import { Hero } from '@/components/hero/hero'
-import { QuickLinks } from '@/components/sections/quick-links'
+import { FAQ } from '@/components/sections/faq'
+import { Footer } from '@/components/layout/footer'
+import { Navbar } from '@/components/layout/navbar'
 import { Metrics } from '@/components/sections/metrics'
-import { DashboardVisual } from '@/components/sections/dashboard-visual'
 import { Features } from '@/components/sections/features'
 import { Security } from '@/components/sections/security'
-import { Testimonials } from '@/components/sections/testimonials'
-import { FAQ } from '@/components/sections/faq'
 import { CTABanner } from '@/components/sections/cta-banner'
+import { QuickLinks } from '@/components/sections/quick-links'
+import { Testimonials } from '@/components/sections/testimonials'
+import { DashboardVisual } from '@/components/sections/dashboard-visual'
 
 export default function MarketingPage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="bg-background min-h-screen">
       <Navbar />
       <main>
         <Hero />

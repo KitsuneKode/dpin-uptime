@@ -7,7 +7,7 @@ A comprehensive set of React components for building a Better Uptime-inspired da
 ```
 components/
 ├── dashboard/          # Main dashboard components
-├── monitors/          # Monitor management components  
+├── monitors/          # Monitor management components
 ├── status-pages/      # Public status page components
 └── ui/               # Shared UI components
 ```
@@ -41,37 +41,44 @@ components/
 ## 🎨 Design System
 
 ### Status Colors
+
 - **Up/Operational**: `emerald-500` (green)
-- **Down**: `red-500` 
+- **Down**: `red-500`
 - **Degraded**: `amber-500` (yellow)
 - **Paused**: `gray-400`
 
 ### Chart Colors
+
 Uses CSS variables from `globals.css`:
+
 - `--chart-1` through `--chart-5` for multi-series charts
 - Automatic dark/light theme support
 
 ## 🔧 Technical Features
 
 ### React Query Integration
+
 - Automatic caching and background updates
 - Optimistic updates for mutations
 - Error handling and retry logic
 - Real-time data with configurable refetch intervals
 
 ### Form Validation
+
 - Zod schemas for type-safe validation
 - react-hook-form integration
 - Real-time validation feedback
 - Proper TypeScript typing
 
 ### Responsive Design
+
 - Mobile-first approach
 - Flexible grid layouts
 - Proper breakpoints for all screen sizes
 - Touch-friendly interactions
 
 ### Accessibility
+
 - ARIA labels and roles
 - Keyboard navigation support
 - Screen reader compatibility
@@ -80,46 +87,47 @@ Uses CSS variables from `globals.css`:
 ## 🚀 Usage Examples
 
 ### Basic Dashboard
+
 ```tsx
-import { DashboardOverview } from '@/components/dashboard';
+import { DashboardOverview } from '@/components/dashboard'
 
 export default function DashboardPage() {
-  return <DashboardOverview />;
+  return <DashboardOverview />
 }
 ```
 
 ### Monitor Management
+
 ```tsx
-import { MonitorsList, MonitorForm } from '@/components/monitors';
-import { useState } from 'react';
+import { useState } from 'react'
+import { MonitorsList, MonitorForm } from '@/components/monitors'
 
 export default function MonitorsPage() {
-  const [showForm, setShowForm] = useState(false);
-  
+  const [showForm, setShowForm] = useState(false)
+
   return (
     <>
-      <MonitorsList 
-        onCreateMonitor={() => setShowForm(true)}
-      />
+      <MonitorsList onCreateMonitor={() => setShowForm(true)} />
       {showForm && (
-        <MonitorForm 
+        <MonitorForm
           onSuccess={() => setShowForm(false)}
           onCancel={() => setShowForm(false)}
         />
       )}
     </>
-  );
+  )
 }
 ```
 
 ### Custom Chart
+
 ```tsx
-import { UptimeChart } from '@/components/ui';
-import { useResponseTimeData } from '@/hooks/api';
+import { UptimeChart } from '@/components/ui'
+import { useResponseTimeData } from '@/hooks/api'
 
 export function CustomChart({ monitorId }: { monitorId: string }) {
-  const { data, isLoading } = useResponseTimeData(monitorId, 'day');
-  
+  const { data, isLoading } = useResponseTimeData(monitorId, 'day')
+
   return (
     <UptimeChart
       data={data?.data || []}
@@ -127,18 +135,20 @@ export function CustomChart({ monitorId }: { monitorId: string }) {
       height={300}
       isLoading={isLoading}
     />
-  );
+  )
 }
 ```
 
 ## 🔌 API Integration
 
 ### Required Environment Variables
+
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ```
 
 ### API Endpoints Expected
+
 - `GET /dashboard/metrics` - Dashboard KPIs
 - `GET /monitors` - List monitors with pagination/filtering
 - `GET /monitors/:id` - Single monitor details
@@ -152,23 +162,27 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ## 🎯 Key Features Implemented
 
 ### Real-time Updates
+
 - Dashboard metrics refresh every 60 seconds
 - Monitor status updates every 30 seconds
 - Live response time charts
 
 ### Advanced Filtering
+
 - Search monitors by name/URL
 - Filter by status (up/down/degraded/paused)
 - Time period selection for charts
 - Location-based response time data
 
 ### Error Handling
+
 - Graceful loading states with skeletons
 - Error boundaries with retry functionality
 - Toast notifications for user actions
 - Offline state handling
 
 ### Performance Optimizations
+
 - React Query caching strategies
 - Memoized chart configurations
 - Optimized re-renders with useMemo
@@ -177,6 +191,7 @@ NEXT_PUBLIC_API_URL=http://localhost:3001/api
 ## 🔄 State Management
 
 Uses React Query for all server state:
+
 - Automatic background synchronization
 - Optimistic updates for better UX
 - Intelligent cache invalidation
@@ -193,12 +208,13 @@ Uses React Query for all server state:
 ## 📱 Responsive Breakpoints
 
 - **Mobile**: `< 768px` - Stacked layouts, simplified navigation
-- **Tablet**: `768px - 1024px` - 2-column grids, condensed tables  
+- **Tablet**: `768px - 1024px` - 2-column grids, condensed tables
 - **Desktop**: `> 1024px` - Full multi-column layouts, detailed views
 
 ## 🧪 Testing Considerations
 
 Components are built with testing in mind:
+
 - Predictable data-testid attributes
 - Separated business logic from UI
 - Mockable API hooks

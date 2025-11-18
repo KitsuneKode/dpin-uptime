@@ -36,29 +36,32 @@ const socialLinks = [
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
+    <footer className="border-border bg-background border-t">
       <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
+        <div className="grid grid-cols-2 gap-8 md:grid-cols-6">
           <div className="col-span-2">
-            <Link href="/" className="group flex items-center space-x-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105">
+            <Link href="/" className="group mb-4 flex items-center space-x-2">
+              <div className="bg-primary text-primary-foreground flex h-8 w-8 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
                 <Activity className="h-4 w-4" />
               </div>
-              <span className="font-bold text-lg transition-colors group-hover:text-primary">DPin Uptime</span>
+              <span className="group-hover:text-primary text-lg font-bold transition-colors">
+                DPin Uptime
+              </span>
             </Link>
-            <p className="text-muted-foreground text-sm max-w-xs">
-              Monitor your services with confidence. Get instant alerts when your websites and APIs go down.
+            <p className="text-muted-foreground max-w-xs text-sm">
+              Monitor your services with confidence. Get instant alerts when
+              your websites and APIs go down.
             </p>
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Product</h3>
+            <h3 className="mb-3 font-semibold">Product</h3>
             <ul className="space-y-2">
               {footerLinks.product.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -68,13 +71,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Company</h3>
+            <h3 className="mb-3 font-semibold">Company</h3>
             <ul className="space-y-2">
               {footerLinks.company.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -84,13 +87,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Resources</h3>
+            <h3 className="mb-3 font-semibold">Resources</h3>
             <ul className="space-y-2">
               {footerLinks.resources.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -100,13 +103,13 @@ export function Footer() {
           </div>
 
           <div>
-            <h3 className="font-semibold mb-3">Legal</h3>
+            <h3 className="mb-3 font-semibold">Legal</h3>
             <ul className="space-y-2">
               {footerLinks.legal.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                    className="text-muted-foreground hover:text-foreground text-sm transition-colors"
                   >
                     {link.label}
                   </Link>
@@ -116,11 +119,11 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="border-t border-border mt-12 pt-8 flex flex-col sm:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="border-border mt-12 flex flex-col items-center justify-between border-t pt-8 sm:flex-row">
+          <p className="text-muted-foreground text-sm">
             © 2024 DPin Uptime. All rights reserved.
           </p>
-          <div className="flex items-center space-x-4 mt-4 sm:mt-0">
+          <div className="mt-4 flex items-center space-x-4 sm:mt-0">
             {socialLinks.map((social) => {
               const Icon = social.icon
               return (

@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import { authMiddleware } from '@/middlewares/auth-middleware'
 import {
   getDashboardMetrics,
   getResponseTimeData,
   getAllMonitorUptimeStats,
 } from '@/utils/aggregation'
+import { authMiddleware } from '@/middlewares/auth-middleware'
+import { Router } from 'express'
 
 const router = Router()
 
@@ -43,9 +43,9 @@ router.get('/dashboard/response-times', async (req, res) => {
 
     // Map frontend period format to backend format
     const periodMap: Record<string, '24h' | '7d' | '30d'> = {
-      'day': '24h',
-      'week': '7d',
-      'month': '30d',
+      day: '24h',
+      week: '7d',
+      month: '30d',
       '24h': '24h',
       '7d': '7d',
       '30d': '30d',

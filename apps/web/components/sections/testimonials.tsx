@@ -60,7 +60,7 @@ const testimonials = [
   {
     id: 6,
     content:
-      'The mobile app notifications are a lifesaver when I\'m away from my desk. I can respond to incidents immediately and keep our SLA commitments intact.',
+      "The mobile app notifications are a lifesaver when I'm away from my desk. I can respond to incidents immediately and keep our SLA commitments intact.",
     author: 'Jessica Park',
     role: 'Operations Manager',
     company: 'FinanceFlow',
@@ -70,7 +70,7 @@ const testimonials = [
   {
     id: 7,
     content:
-      'DPin Uptime\'s webhook integrations with our Slack and PagerDuty setup work flawlessly. The escalation policies ensure the right person gets notified every time.',
+      "DPin Uptime's webhook integrations with our Slack and PagerDuty setup work flawlessly. The escalation policies ensure the right person gets notified every time.",
     author: 'Robert Martinez',
     role: 'Platform Engineer',
     company: 'StreamlineOps',

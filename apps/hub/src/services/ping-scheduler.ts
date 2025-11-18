@@ -1,5 +1,5 @@
-import { prisma } from '@dpin-uptime/store/'
 import type { AvailableValidator } from '@/types'
+import { prisma } from '@dpin-uptime/store/'
 import { randomUUID } from 'crypto'
 
 /**
@@ -64,7 +64,7 @@ export class PingScheduler {
       }
 
       console.log(
-        `Pinging ${monitors.length} monitor(s) with ${this.availableValidators.length} validator(s)`
+        `Pinging ${monitors.length} monitor(s) with ${this.availableValidators.length} validator(s)`,
       )
 
       // Send ping requests to validators
@@ -92,13 +92,10 @@ export class PingScheduler {
         try {
           validator.socket.send(JSON.stringify(message))
           console.log(
-            `→ Sent ping request to validator ${validator.validatorId} for ${monitor.url}`
+            `→ Sent ping request to validator ${validator.validatorId} for ${monitor.url}`,
           )
         } catch (error) {
-          console.error(
-            `Failed to send ping to validator ${validator.validatorId}:`,
-            error
-          )
+          console.error(`Failed to send ping to validator ${validator.validatorId}:`, error)
           // Remove validator from available list if socket is dead
           this.removeValidator(validator.validatorId)
         }
@@ -116,9 +113,7 @@ export class PingScheduler {
       return null
     }
 
-    const randomIndex = Math.floor(
-      Math.random() * this.availableValidators.length
-    )
+    const randomIndex = Math.floor(Math.random() * this.availableValidators.length)
     return this.availableValidators[randomIndex]
   }
 
@@ -126,9 +121,7 @@ export class PingScheduler {
    * Remove a validator from the available list
    */
   private removeValidator(validatorId: string) {
-    const index = this.availableValidators.findIndex(
-      (v) => v.validatorId === validatorId
-    )
+    const index = this.availableValidators.findIndex((v) => v.validatorId === validatorId)
     if (index !== -1) {
       this.availableValidators.splice(index, 1)
       console.log(`Removed validator ${validatorId} from available list`)

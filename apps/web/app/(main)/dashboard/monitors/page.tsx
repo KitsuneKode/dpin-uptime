@@ -1,15 +1,22 @@
-'use client';
+'use client'
 
-import * as React from 'react';
-import { MonitorsList, MonitorForm } from '@/components/monitors';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@dpin-uptime/ui/components/dialog';
-import type { Monitor } from '@/lib/types';
-import { useRouter } from 'next/navigation';
+import * as React from 'react'
+import type { Monitor } from '@/lib/types'
+import { useRouter } from 'next/navigation'
+import { MonitorsList, MonitorForm } from '@/components/monitors'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@dpin-uptime/ui/components/dialog'
 
 export default function MonitorsPage() {
-  const router = useRouter();
-  const [createOpen, setCreateOpen] = React.useState(false);
-  const [editingMonitor, setEditingMonitor] = React.useState<Monitor | null>(null);
+  const router = useRouter()
+  const [createOpen, setCreateOpen] = React.useState(false)
+  const [editingMonitor, setEditingMonitor] = React.useState<Monitor | null>(
+    null,
+  )
 
   return (
     <div className="space-y-6">
@@ -31,7 +38,10 @@ export default function MonitorsPage() {
         </DialogContent>
       </Dialog>
 
-      <Dialog open={!!editingMonitor} onOpenChange={(open) => !open && setEditingMonitor(null)}>
+      <Dialog
+        open={!!editingMonitor}
+        onOpenChange={(open) => !open && setEditingMonitor(null)}
+      >
         <DialogContent className="max-w-2xl">
           <DialogHeader>
             <DialogTitle>Edit Monitor</DialogTitle>
@@ -46,5 +56,5 @@ export default function MonitorsPage() {
         </DialogContent>
       </Dialog>
     </div>
-  );
+  )
 }

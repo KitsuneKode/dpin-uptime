@@ -1,5 +1,3 @@
-
-
 <p align="center">
   <img src="https://nextjs.org/static/favicon/favicon-32x32.png" alt="Next.js" width="32" />
   <img src="https://expressjs.com/images/favicon.png" alt="Express" width="32" />
@@ -49,11 +47,13 @@ packages/
 ## ⚡ Quick Start
 
 1. **Install dependencies (with Bun):**
+
    ```sh
    bun install
    ```
 
 2. **Start development (all apps/packages):**
+
    ```sh
    bun dev
    ```
@@ -86,12 +86,12 @@ packages/
 - [Better Auth](https://better-auth.com/)
 
 ---
+
 ## 📝 Author
 
 - [@KitsunKode](https://x.com/KitsunKode)
 
 ---
-
 
 ## 📄 License
 
@@ -100,6 +100,3 @@ MIT
 ---
 
 > Want to contribute? Add badges, contribution guidelines, or a screenshot/demo section!
-
-
-

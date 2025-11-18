@@ -9,7 +9,13 @@
       "env": ["DATABASE_URL", "NODE_ENV"]
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
+      "inputs": ["$TURBO_DEFAULT$", "eslint.config.js", ".eslintrc*"],
+      "outputs": []
+    },
+    "lint:fix": {
+      "dependsOn": ["^lint:fix"],
+      "cache": false
     },
     "check-types": {
       "dependsOn": ["^check-types"]

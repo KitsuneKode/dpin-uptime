@@ -5,6 +5,7 @@
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
+    "lint:fix": "turbo run lint:fix",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "dev:web": "turbo -F @dpin-uptime/web dev",
@@ -15,10 +16,12 @@
     "db:studio": "turbo db:studio",
     "db:generate": "turbo db:generate",
     "db:migrate": "turbo db:migrate",
-    "preinstall": "npx only-allow bun",
-    "postinstall": "turbo run db:generate"
+    "prepare": "husky",
+    "preinstall": "npx only-allow bun"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.6",
     "prettier": "^3.6.2",
     "prettier-plugin-sort-imports": "^1.8.8",
     "turbo": "^2.6.1",

@@ -40,11 +40,11 @@ export function Footer() {
       <div className="container mx-auto px-4 py-12">
         <div className="grid grid-cols-2 md:grid-cols-6 gap-8">
           <div className="col-span-2">
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <Link href="/" className="group flex items-center space-x-2 mb-4">
+              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground transition-transform group-hover:scale-105">
                 <Activity className="h-4 w-4" />
               </div>
-              <span className="font-bold text-lg">DPin Uptime</span>
+              <span className="font-bold text-lg transition-colors group-hover:text-primary">DPin Uptime</span>
             </Link>
             <p className="text-muted-foreground text-sm max-w-xs">
               Monitor your services with confidence. Get instant alerts when your websites and APIs go down.

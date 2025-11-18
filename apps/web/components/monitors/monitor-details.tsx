@@ -238,6 +238,7 @@ export function MonitorDetails({ monitorId, onEdit }: MonitorDetailsProps) {
                   Last checked{' '}
                   {formatDistanceToNow(new Date(monitor.lastChecked), {
                     addSuffix: true,
+                    includeSeconds: true,
                   })}
                 </span>
               </div>

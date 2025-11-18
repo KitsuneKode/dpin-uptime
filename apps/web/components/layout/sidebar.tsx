@@ -102,12 +102,14 @@ export function Sidebar() {
     <div className="bg-background flex h-full w-64 flex-col border-r">
       {/* Logo */}
       <div className="flex h-16 items-center border-b px-6">
-        <div className="flex items-center gap-2">
-          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg">
+        <Link href="/dashboard" className="group flex items-center gap-2">
+          <div className="bg-primary flex h-8 w-8 items-center justify-center rounded-lg transition-transform group-hover:scale-105">
             <Zap className="text-primary-foreground h-5 w-5" />
           </div>
-          <span className="text-lg font-semibold">Uptime</span>
-        </div>
+          <span className="text-lg font-semibold transition-colors group-hover:text-primary">
+            Uptime
+          </span>
+        </Link>
       </div>
 
       {/* Navigation */}
@@ -124,12 +126,12 @@ export function Sidebar() {
                 key={item.name}
                 href={item.disabled ? '#' : item.href}
                 className={cn(
-                  'group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-colors',
+                  'group flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium transition-all duration-200',
                   isActive
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
                     : item.disabled
-                      ? 'text-muted-foreground cursor-not-allowed'
-                      : 'text-foreground hover:bg-muted hover:text-foreground',
+                      ? 'text-muted-foreground cursor-not-allowed opacity-60'
+                      : 'text-foreground hover:bg-muted hover:text-foreground hover:translate-x-1',
                 )}
                 onClick={item.disabled ? (e) => e.preventDefault() : undefined}
               >
@@ -159,10 +161,12 @@ export function Sidebar() {
               key={item.name}
               href={item.disabled ? '#' : item.href}
               className={cn(
-                'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors',
-                item.disabled
-                  ? 'text-muted-foreground cursor-not-allowed'
-                  : 'text-foreground hover:bg-muted hover:text-foreground',
+                'group flex items-center rounded-md px-3 py-2 text-sm font-medium transition-all duration-200',
+                pathname === item.href
+                  ? 'bg-primary text-primary-foreground shadow-sm'
+                  : item.disabled
+                    ? 'text-muted-foreground cursor-not-allowed opacity-60'
+                    : 'text-foreground hover:bg-muted hover:text-foreground hover:translate-x-1',
               )}
               onClick={item.disabled ? (e) => e.preventDefault() : undefined}
             >
@@ -175,29 +179,33 @@ export function Sidebar() {
 
       {/* Status Summary */}
       <div className="border-t p-4">
-        <div className="bg-muted rounded-lg p-3">
-          <div className="text-muted-foreground mb-2 text-xs font-medium">
+        <div className="bg-muted rounded-lg p-3 transition-all duration-200 hover:shadow-md hover:bg-muted/80">
+          <div className="text-muted-foreground mb-2 text-xs font-medium uppercase tracking-wide">
             System Status
           </div>
-          <div className="space-y-1 text-xs">
-            <div className="flex justify-between">
-              <span>Monitors:</span>
-              <span className="font-medium">{metrics?.totalMonitors || 0}</span>
+          <div className="space-y-2 text-xs">
+            <div className="flex justify-between items-center py-0.5">
+              <span className="text-muted-foreground">Monitors:</span>
+              <span className="font-semibold tabular-nums">{metrics?.totalMonitors || 0}</span>
             </div>
-            <div className="flex justify-between">
-              <span>Uptime:</span>
-              <span className="font-medium">
+            <div className="flex justify-between items-center py-0.5">
+              <span className="text-muted-foreground">Uptime:</span>
+              <span className="font-semibold tabular-nums">
                 {metrics ? `${metrics.overallUptime.toFixed(2)}%` : '—'}
               </span>
             </div>
-            <div className="flex justify-between">
-              <span>Incidents:</span>
+            <div className="flex justify-between items-center py-0.5">
+              <span className="text-muted-foreground">Incidents:</span>
               <span
                 className={cn(
-                  'font-medium',
+                  'font-semibold tabular-nums flex items-center gap-1',
                   activeIncidents > 0 ? 'text-red-600' : 'text-green-600',
                 )}
               >
+                <span className={cn(
+                  'h-1.5 w-1.5 rounded-full',
+                  activeIncidents > 0 ? 'bg-red-600 animate-pulse' : 'bg-green-600'
+                )}/>
                 {activeIncidents}
               </span>
             </div>

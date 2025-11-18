@@ -219,6 +219,7 @@ export function MonitorsList({
                     <div className="text-muted-foreground text-xs">
                       {formatDistanceToNow(new Date(monitor.lastChecked), {
                         addSuffix: true,
+                        includeSeconds: true,
                       })}
                     </div>
                   </div>

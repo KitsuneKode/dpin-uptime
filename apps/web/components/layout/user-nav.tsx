@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { LogOut, Settings, User } from 'lucide-react'
 import { authClient } from '@dpin-uptime/auth/client'
 import { Avatar, AvatarFallback, AvatarImage } from '@dpin-uptime/ui/components/avatar'
@@ -53,11 +54,11 @@ export function UserNav({ user }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Button variant="ghost" className="relative h-8 w-8 rounded-full transition-all hover:ring-2 hover:ring-primary hover:ring-offset-2">
           <Avatar className="h-8 w-8">
-            <AvatarImage 
-              src={user.image || getAvatarUrl(user.id)} 
-              alt={user.name || user.email || 'User'} 
+            <AvatarImage
+              src={user.image || getAvatarUrl(user.id)}
+              alt={user.name || user.email || 'User'}
             />
             <AvatarFallback className="bg-primary text-primary-foreground">
               {getInitials(user.name, user.email)}
@@ -78,16 +79,16 @@ export function UserNav({ user }: UserNavProps) {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <a href="/dashboard/profile" className="flex items-center cursor-pointer">
+          <Link href="/dashboard/profile" className="flex items-center cursor-pointer">
             <User className="mr-2 h-4 w-4" />
             <span>Profile</span>
-          </a>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <a href="/dashboard/settings" className="flex items-center cursor-pointer">
+          <Link href="/dashboard/settings" className="flex items-center cursor-pointer">
             <Settings className="mr-2 h-4 w-4" />
             <span>Settings</span>
-          </a>
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem 

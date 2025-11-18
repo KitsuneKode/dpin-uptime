@@ -1,6 +1,5 @@
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@dpin-uptime/ui/components/card';
 import { Badge } from '@dpin-uptime/ui/components/badge';
 import { StatusIndicator } from '@/components/ui/status-indicator';
 import { UptimeStatusBar } from '@/components/ui/uptime-status-bar';
@@ -50,22 +49,22 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
   const currentStatus = statusConfig[overallStatus];
 
   return (
-    <div className={`min-h-screen p-6 ${statusPage.theme === 'dark' ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
-      <div className="max-w-4xl mx-auto space-y-6">
+    <div className={`p-8 ${statusPage.theme === 'dark' ? 'dark bg-gray-900' : 'bg-background'}`}>
+      <div className="space-y-8">
         {/* Header */}
         <div className="text-center space-y-4">
           {statusPage.logoUrl && (
-            <img 
-              src={statusPage.logoUrl} 
+            <img
+              src={statusPage.logoUrl}
               alt={`${statusPage.companyName} logo`}
               className="h-12 mx-auto"
             />
           )}
-          <h1 className="text-3xl font-bold text-foreground">
+          <h1 className="text-3xl font-bold">
             {statusPage.companyName} Status
           </h1>
-          <div className="flex items-center justify-center gap-3">
-            <StatusIndicator status={currentStatus.indicator} size="lg" />
+          <div className="flex items-center justify-center gap-2">
+            <StatusIndicator status={currentStatus.indicator} size="md" />
             <Badge className={currentStatus.color}>
               {currentStatus.text}
             </Badge>
@@ -73,31 +72,24 @@ export function StatusPagePreview({ statusPage }: StatusPagePreviewProps) {
         </div>
 
         {/* Services Status */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Services</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {selectedMonitors.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">
-                  No services configured for this status page
-                </div>
-              ) : (
-                selectedMonitors.map((monitor) => (
-                  <MonitorStatusRow key={monitor.id} monitor={monitor} />
-                ))
-              )}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold">Services</h2>
+          {selectedMonitors.length === 0 ? (
+            <div className="text-center text-muted-foreground py-12 border rounded-lg">
+              <p>No services configured for this status page</p>
             </div>
-          </CardContent>
-        </Card>
+          ) : (
+            <div className="space-y-3">
+              {selectedMonitors.map((monitor) => (
+                <MonitorStatusRow key={monitor.id} monitor={monitor} />
+              ))}
+            </div>
+          )}
+        </div>
 
         {/* Footer */}
-        <div className="text-center text-sm text-muted-foreground">
-          <p>Status page powered by {statusPage.companyName}</p>
-          <p className="mt-1">
-            Last updated {formatDistanceToNow(new Date(), { addSuffix: true })}
-          </p>
+        <div className="text-center pt-6 border-t text-sm text-muted-foreground">
+          <p>Last updated {formatDistanceToNow(new Date(), { addSuffix: true, includeSeconds: true })}</p>
         </div>
       </div>
     </div>
@@ -119,15 +111,15 @@ function MonitorStatusRow({ monitor }: { monitor: any }) {
   const ticks: WebsiteTick[] = ticksResponse?.data || [];
 
   return (
-    <div className="space-y-3 p-4 border rounded-lg">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <StatusIndicator status={monitor.status} size="md" />
-          <div>
-            <h3 className="font-medium text-foreground">
+    <div className="p-4 border rounded-lg bg-card">
+      <div className="flex items-center justify-between gap-4 mb-3">
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <StatusIndicator status={monitor.status} size="sm" />
+          <div className="min-w-0 flex-1">
+            <h3 className="font-medium truncate">
               {monitor.name}
             </h3>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground truncate">
               {monitor.url}
             </p>
           </div>
@@ -140,7 +132,7 @@ function MonitorStatusRow({ monitor }: { monitor: any }) {
              monitor.status === 'degraded' ? 'Degraded' : 'Paused'}
           </div>
           <div className="text-xs text-muted-foreground">
-            {monitor.responseTime}ms • {formatDistanceToNow(new Date(monitor.lastChecked), { addSuffix: true })}
+            {monitor.responseTime}ms
           </div>
         </div>
       </div>

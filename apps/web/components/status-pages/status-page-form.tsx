@@ -82,7 +82,10 @@ export function StatusPageForm({ statusPage, onSuccess, onCancel }: StatusPageFo
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Basic Information */}
             <div className="space-y-4">
-              <h3 className="text-lg font-medium">Basic Information</h3>
+              <div className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-primary" />
+                <h3 className="text-lg font-semibold">Basic Information</h3>
+              </div>
               
               <FormField
                 control={form.control}
@@ -129,8 +132,11 @@ export function StatusPageForm({ statusPage, onSuccess, onCancel }: StatusPageFo
             </div>
 
             {/* Personalization */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Personalization</h3>
+            <div className="space-y-4 pt-6 border-t">
+              <div className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-primary" />
+                <h3 className="text-lg font-semibold">Personalization</h3>
+              </div>
               
               <FormField
                 control={form.control}
@@ -181,28 +187,64 @@ export function StatusPageForm({ statusPage, onSuccess, onCancel }: StatusPageFo
             </div>
 
             {/* Monitor Selection */}
-            <div className="space-y-4">
-              <h3 className="text-lg font-medium">Monitors</h3>
+            <div className="space-y-4 pt-6 border-t">
+              <div className="flex items-center gap-2">
+                <div className="h-1 w-1 rounded-full bg-primary" />
+                <h3 className="text-lg font-semibold">Monitors</h3>
+              </div>
               
               <FormField
                 control={form.control}
                 name="monitors"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Select Monitors to Display</FormLabel>
+                    <div className="flex items-center justify-between">
+                      <FormLabel>Select Monitors to Display</FormLabel>
+                      {monitors.length > 0 && (
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              const allMonitorIds = monitors.map(m => m.id);
+                              field.onChange(allMonitorIds);
+                            }}
+                            className="h-7 text-xs"
+                          >
+                            Select All
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => field.onChange([])}
+                            className="h-7 text-xs"
+                          >
+                            Clear All
+                          </Button>
+                        </div>
+                      )}
+                    </div>
                     <FormDescription>
                       Choose which monitors will be visible on your public status page
+                      {field.value.length > 0 && ` (${field.value.length} selected)`}
                     </FormDescription>
-                    <div className="space-y-2 max-h-48 overflow-y-auto border rounded-md p-3">
+                    <div className="space-y-2 max-h-64 overflow-y-auto border rounded-md p-3 bg-muted/30">
                       {monitors.length === 0 ? (
-                        <div className="text-center text-muted-foreground py-4">
-                          <Monitor className="h-8 w-8 mx-auto mb-2" />
-                          <p>No monitors available</p>
-                          <p className="text-xs">Create some monitors first</p>
+                        <div className="text-center text-muted-foreground py-8">
+                          <div className="mx-auto w-12 h-12 rounded-full bg-muted flex items-center justify-center mb-3">
+                            <Monitor className="h-6 w-6" />
+                          </div>
+                          <p className="font-medium">No monitors available</p>
+                          <p className="text-xs mt-1">Create some monitors first</p>
                         </div>
                       ) : (
                         monitors.map((monitor) => (
-                          <div key={monitor.id} className="flex items-center space-x-2">
+                          <div
+                            key={monitor.id}
+                            className="flex items-center space-x-3 p-3 rounded-lg border bg-background hover:bg-accent/50 transition-colors cursor-pointer group"
+                          >
                             <input
                               type="checkbox"
                               id={monitor.id}
@@ -213,12 +255,20 @@ export function StatusPageForm({ statusPage, onSuccess, onCancel }: StatusPageFo
                                   : field.value.filter(id => id !== monitor.id);
                                 field.onChange(updatedMonitors);
                               }}
-                              className="rounded border-gray-300"
+                              className="rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
                             />
-                            <Label htmlFor={monitor.id} className="text-sm flex-1">
-                              <div className="flex items-center justify-between">
-                                <span>{monitor.name}</span>
-                                <span className="text-xs text-muted-foreground">{monitor.url}</span>
+                            <Label htmlFor={monitor.id} className="text-sm flex-1 cursor-pointer">
+                              <div className="space-y-1">
+                                <div className="flex items-center justify-between">
+                                  <span className="font-medium group-hover:text-primary transition-colors">{monitor.name}</span>
+                                  <Badge
+                                    variant={monitor.status === 'up' ? 'default' : 'destructive'}
+                                    className="text-xs"
+                                  >
+                                    {monitor.status}
+                                  </Badge>
+                                </div>
+                                <p className="text-xs text-muted-foreground truncate">{monitor.url}</p>
                               </div>
                             </Label>
                           </div>
